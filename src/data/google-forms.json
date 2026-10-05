@@ -1,0 +1,15 @@
+{
+  "sources": {
+    "trial": "https://docs.google.com/forms/d/e/1FAIpQLSd-GF0-gZmNAaTuz_vT6zbYH7Oh-4EnicLCV2xmLKB68R5qYw/viewform",
+    "membership": "https://docs.google.com/forms/d/e/1FAIpQLSfAxWjCHvYdyVzXMnA7e9Znk_AwEIfAZj2s4tfehUTrDju7og/viewform"
+  },
+  "ourValues": {
+    "membership": {
+      "basic": "Basic (1 training per week) - 49€/month",
+      "full": "Full (3 trainings per week) - 79€/month",
+      "single": "Single Pass - 20€"
+    }
+  },
+  "trial": null,
+  "membership": null
+}

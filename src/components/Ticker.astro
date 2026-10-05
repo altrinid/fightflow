@@ -9,12 +9,12 @@ const { lang } = Astro.props;
 const words = t(lang).ticker;
 ---
 
-<div class="ticker-wrap">
+<div class="ticker-wrap" aria-hidden="true">
 <div class="ticker">
   <div class="ticker__track">
     {
-      [0, 1].map((copy) => (
-        <ul class="ticker__group" role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+      [0, 1].map(() => (
+        <ul class="ticker__group" role="list">
           {words.map((w) => (
             <li>
               {w}
@@ -50,7 +50,7 @@ const words = t(lang).ticker;
     color: var(--c-ink);
     transform: rotate(-1.6deg);
     overflow: hidden;
-    box-shadow: 0 20px 60px -20px rgb(225 29 39 / 0.6);
+    box-shadow: 0 20px 60px -20px rgb(200 69 58 / 0.6);
   }
 
   .ticker__track {

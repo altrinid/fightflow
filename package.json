@@ -12,8 +12,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test apps-script/code.test.mjs",
-    "import:original": "node scripts/import-original.mjs"
+    "test": "node --test apps-script/code.test.mjs scripts/sync-google-forms.test.mjs",
+    "import:original": "node scripts/import-original.mjs",
+    "forms:sync": "node scripts/sync-google-forms.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

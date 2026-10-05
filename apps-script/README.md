@@ -1,12 +1,17 @@
 # Anmelde-Backend (Google Apps Script)
 
+> Standard ist die Anbindung an die **bestehenden Google Formulare** des Vereins
+> (`npm run forms:sync`, siehe Haupt-README). Dieses Backend ist die Alternative, falls der
+> Verein Formular, Tabelle und Mails komplett aus einer Hand haben möchte.
+
 Kleines, kostenloses Backend für das Anmeldeformular – läuft im Google-Konto des Vereins
 (`fightflow01@gmail.com`) und bildet den bisherigen Ablauf 1:1 ab:
 
-1. **Anmeldung** → Eintrag in der Tabelle „Anmeldungen“ + sofortige Bestätigungs-Mail
-   mit Preis und Bankdaten (gleicher Text wie bisher, auf Deutsch oder Englisch).
-2. **Benachrichtigung** an den Verein mit allen Angaben (Antworten geht direkt an die Person).
-3. **Zahlung eingegangen** → in der Tabelle den Haken bei „Bezahlt“ setzen → die Mail
+1. **Probetraining** → Eintrag im Blatt „Probetraining“ + Bestätigung mit Wunschtermin und Adresse.
+2. **Mitgliedschaft** → Eintrag im Blatt „Anmeldungen“ + sofortige Bestätigungs-Mail mit Preis und
+   Bankdaten (gleicher Text wie bisher, auf Deutsch oder Englisch).
+3. **Benachrichtigung** an den Verein mit allen Angaben (Antworten geht direkt an die Person).
+4. **Zahlung eingegangen** → in der Tabelle den Haken bei „Bezahlt“ setzen → die Mail
    „Your membership is active“ / „Deine Mitgliedschaft ist aktiv“ geht automatisch raus.
 
 ## Einrichtung (ca. 10 Minuten)
@@ -42,8 +47,8 @@ mit einer vorausgefüllten Anmeldung an `fightflow01@gmail.com`.
 
 ## Pakete & Preise
 
-Bekannte Pakete stehen oben in `Code.gs` unter `PLANS` (aktuell: Basic, 49 €/Monat).
-Neue Pakete dort und in `src/data/site.ts` (`memberships`) ergänzen.
+Bekannte Pakete stehen oben in `Code.gs` unter `PLANS` (Basic 49 €, Full 79 €, Einzeltraining 20 €).
+Neue Pakete dort und in `src/data/site.ts` (`prices`) ergänzen.
 
 ## Tests
 
@@ -51,5 +56,5 @@ Neue Pakete dort und in `src/data/site.ts` (`memberships`) ergänzen.
 npm test
 ```
 
-führt `Code.gs` in einer Sandbox mit simulierten Google-Diensten aus (Anmeldung,
+führt `Code.gs` in einer Sandbox mit simulierten Google-Diensten aus (Probetraining, Anmeldung,
 Mails, Formel-Schutz in der Tabelle, Aktivierung per Haken).

@@ -1,65 +1,81 @@
 # FightFlow – Website
 
-Neue Website für den **Kampfsportverein FightFlow Wien – ASKÖ** (Kickboxen, 1020 Wien).
-Ersetzt die bisherige Google-Sites-Seite [www.fightflow.at](https://www.fightflow.at): gleicher Verein,
-gleicher Anmeldeablauf – aber deutlich schneller, moderner und zweisprachig (DE/EN).
+Neue Website für den **Kampfsportverein FightFlow Wien – ASKÖ** (Kickboxen, Haymerlegasse 27, 1160 Wien).
+Ersetzt die bisherige Google-Sites-Seite [www.fightflow.at](https://www.fightflow.at) – mit allen Inhalten,
+Fotos und dem Logo der alten Seite, im gleichen Look (dunkel, Ziegelrot/Graphit aus dem Logo), aber
+deutlich schneller, moderner und zweisprachig (DE/EN).
 
-| Messwert (lokal, Lighthouse 13)           | Mobil | Desktop |
-| ----------------------------------------- | ----- | ------- |
-| Performance                               | 100   | 100     |
-| Barrierefreiheit                          | 100   | 100     |
-| Best Practices                            | 100   | 100     |
-| SEO                                       | 100   | 100     |
-| Total Blocking Time / Layout Shift (CLS)  | 0 ms / 0 | 0 ms / 0 |
+| Messwert (lokal, Lighthouse 13)           | Mobil    | Desktop  |
+| ----------------------------------------- | -------- | -------- |
+| Performance                               | 99       | 100      |
+| Barrierefreiheit                          | 100      | 100      |
+| Best Practices                            | 100      | 100      |
+| SEO                                       | 100      | 100      |
+| Layout Shift (CLS)                        | 0        | 0        |
 
-- **~21 KB** HTML pro Seite (gzip, inkl. komplettem CSS + 3 KB JS), dazu 2 Schriftdateien (67 KB) – sonst nichts.
-- Keine Cookies, kein Tracking, keine Drittanbieter-Requests (Schriften lokal) → kein Cookie-Banner nötig.
+- Startseite mobil ≈ **170 KB** inkl. Fotos (AVIF/WebP in passender Größe, Lazy Loading), HTML ≈ 24 KB gzip.
+- Keine Cookies, kein Tracking, keine Drittanbieter beim Seitenaufruf – Google Maps lädt erst nach Klick.
 - 0 Verstöße bei axe-core (WCAG 2.2 AA) auf allen Seiten, Mobil und Desktop.
-- SEO: hreflang DE/EN, strukturierte Daten (`SportsClub`, `FAQPage`, `WebSite`), Sitemap, OG-Bild, saubere Titles/Descriptions.
+- SEO: hreflang DE/EN, strukturierte Daten (`SportsClub` mit Adresse, Geo, Trainingszeiten, Preisen; `FAQPage`),
+  Sitemap, OG-Bild; alte Google-Sites-URLs (`/home`, `/about`, `/contact`, `/free-trial-training`,
+  `/membership-registration`) leiten auf die passenden Abschnitte weiter.
 
-## Aufbau
+## Inhalte
+
+Alles stammt von der bisherigen Seite (Import in `content/original/`): Slogan, Vorteile, Trainingszeiten
+(Di & Do 18:00–19:30, So 14:30–16:00), Preisliste (Probetraining gratis, Einzeltraining 20 €, Basic 49 €,
+Full 79 €), FAQ, Head Coach (Weltmeister, 3× Europameister, mehrfacher Russischer Meister), Kontakt,
+Instagram, Logo und 11 Fotos. Neu formuliert bzw. ergänzt: deutsche Übersetzung, kurze Texte zu den
+Trainingspunkten und Preis-Karten, FAQ „Bezahlung“ (laut Anmelde-E-Mails).
 
 ```
 src/
-  data/site.ts          ← Vereinsdaten, Preise, Trainingszeiten, Coach, Fotos (eine Quelle für alles)
-  i18n/de.ts, en.ts     ← alle Texte Deutsch / Englisch
-  components/           ← Sektionen (Hero, Training, Preise, Anmeldung, FAQ …)
-  pages/                ← / , /en/ , Impressum, Datenschutz (+ EN), 404
-  styles/global.css     ← Design-Tokens (Farben, Schriften, Abstände)
-  scripts/main.ts       ← das einzige JavaScript: Menü, Scroll-Effekte, Formular
-apps-script/            ← kostenloses Anmelde-Backend (Google Apps Script) inkl. Tests
-scripts/import-original.mjs ← holt Texte + Fotos von der alten Google-Sites-Seite
+  data/site.ts            ← Vereinsdaten, Preise, Zeiten, Fotos (eine Quelle für alles)
+  data/google-forms.json  ← Anbindung an die Google Formulare des Vereins
+  i18n/de.ts, en.ts       ← alle Texte Deutsch / Englisch
+  components/             ← Sektionen (Hero, Coach, Gym, Training, Preise, Anmeldung, FAQ, Kontakt …)
+  assets/photos, brand/   ← Fotos und Logo (Astro erzeugt AVIF/WebP)
+  styles/global.css       ← Design-Tokens (Farben aus dem Logo, Schriften, Abstände)
+  scripts/main.ts         ← das einzige JavaScript: Menü, Scroll-Effekte, Formular, Karte
+scripts/
+  import-original.mjs     ← holt Texte + Fotos von der alten Google-Sites-Seite
+  sync-google-forms.mjs   ← liest die Google Formulare und verbindet das Website-Formular damit
+apps-script/              ← optionales eigenes Anmelde-Backend (Google Apps Script) inkl. Tests
 ```
+
+## Anmeldung (Probetraining & Mitgliedschaft)
+
+Das Formular hat zwei Modi: **Gratis-Probetraining** (mit Auswahl der nächsten Trainingstermine) und
+**Mitgliedschaft** (Paket + Startmonat). Wohin die Daten gehen, in dieser Reihenfolge:
+
+1. **Die bestehenden Google Formulare des Vereins** („Trial Training FightFlow“, „Registration FightFlow“) –
+   dann bleibt die bisherige Tabelle und der E-Mail-Versand mit den Zahlungsdaten unverändert:
+
+   ```bash
+   npm run forms:sync     # liest beide Formulare, schreibt src/data/google-forms.json
+   npm run build
+   ```
+
+   Das Skript zeigt alle Fragen mit Feld-IDs und Antwortoptionen an und warnt, falls ein Pflichtfeld des
+   Formulars keine Entsprechung auf der Website hat.
+2. **`PUBLIC_FORM_ENDPOINT`** – eigenes Backend aus [`apps-script/`](apps-script/README.md).
+3. **Fallback**: vorausgefüllte E-Mail an `fightflow01@gmail.com`.
 
 ## Inhalte pflegen
 
-- **Preise / Pakete**: `memberships` in `src/data/site.ts` (aktuell: Basic, 1×/Woche, 49 €/Monat).
-- **Trainingszeiten**: `schedule` in `src/data/site.ts` – sobald befüllt, erscheint der Stundenplan
-  automatisch (bis dahin: „auf Anfrage“ mit Anruf-/Mail-Buttons).
-- **Coach**: Name, Erfolge und Foto unter `coach` in `src/data/site.ts`.
-- **Fotos**: Datei nach `src/assets/photos/` legen, in `site.ts` importieren
-  (`import heroImg from '../assets/photos/hero.jpg'`) und bei `photos.hero` / `coach.photo` eintragen.
-  Astro erzeugt daraus automatisch AVIF/WebP in passenden Größen.
+- **Preise / Zeiten / Adresse**: `src/data/site.ts` (`prices`, `schedule`, `club.gym`).
 - **Texte**: `src/i18n/de.ts` und `src/i18n/en.ts`.
-
-### Materialien der alten Seite übernehmen
-
-```bash
-npm run import:original            # liest www.fightflow.at
-```
-
-speichert alle Texte nach `content/original/*.md` und alle Bilder in voller Auflösung nach
-`src/assets/photos/original/` (+ `manifest.json`). Danach Fotos wie oben eintragen.
+- **Fotos**: Datei nach `src/assets/photos/` legen, in `site.ts` importieren und bei `photos` eintragen.
+- **Alte Seite erneut importieren**: `npm run import:original` (Texte → `content/original/`,
+  Fotos in voller Auflösung → `src/assets/photos/original/`, nicht im Repository).
 
 ## Noch vom Verein zu liefern
 
-- [ ] Fotos (Coach, Training, Halle) und – falls vorhanden – Logo-Datei
-- [ ] Trainingszeiten und Adresse des Trainingsorts
-- [ ] Name und Erfolge des Coaches
-- [ ] Impressum: ZVR-Zahl, Vereinsanschrift, Obmann/Obfrau · Datenschutz: Hosting-Anbieter
-- [ ] Neu formulierte Texte gegenlesen (Trainingsinhalte, FAQ „Vorerfahrung“ und „Was mitbringen“)
+- [ ] Impressum: ZVR-Zahl, Vereinsanschrift (Sitz), Name des Obmanns · Datenschutz: Hosting-Anbieter
+- [ ] Optional: Name und Porträtfoto des Head Coaches (`coach.name`)
+- [ ] Neue/übersetzte Texte gegenlesen
 
-Platzhalter sind auf den Rechtsseiten orange markiert; alles andere blendet sich aus, solange es fehlt.
+Platzhalter sind auf den Rechtsseiten orange markiert.
 
 ## Entwicklung
 
@@ -67,17 +83,11 @@ Platzhalter sind auf den Rechtsseiten orange markiert; alles andere blendet sich
 npm ci
 npm run dev        # http://localhost:4321
 npm run check      # TypeScript / Astro
-npm test           # Tests für das Anmelde-Backend
+npm test           # Tests: Apps-Script-Backend + Google-Forms-Anbindung
 npm run build      # statische Seite nach dist/
 ```
 
-Node ≥ 22.12.
-
-## Anmeldung
-
-Das Formular übernimmt den bisherigen Ablauf (Paket + Startmonat → Bestätigung mit Bankdaten per
-E-Mail → Aktivierung nach Zahlungseingang). Backend-Einrichtung: [`apps-script/README.md`](apps-script/README.md).
-Ohne Backend öffnet das Formular eine vorausgefüllte E-Mail an `fightflow01@gmail.com`.
+Node ≥ 22.12. Hinter einem Proxy die Skripte mit `NODE_USE_ENV_PROXY=1` starten.
 
 ## Veröffentlichen
 
@@ -87,11 +97,10 @@ Ohne Backend öffnet das Formular eine vorausgefüllte E-Mail an `fightflow01@gm
 | ---------------------- | ------------------------------------------------------- | --------------------------- |
 | `SITE_URL`             | absolute Adresse (Canonical, Sitemap, OG)               | `https://www.fightflow.at`  |
 | `BASE_PATH`            | Unterpfad, z. B. `/fightflow/` für GitHub Pages          | `/`                         |
-| `PUBLIC_FORM_ENDPOINT` | URL des Apps-Script-Backends                            | leer → E-Mail-Fallback      |
+| `PUBLIC_FORM_ENDPOINT` | URL des Apps-Script-Backends (falls genutzt)            | leer                        |
 | `PUBLIC_NOINDEX`       | `true` für Vorschau-Deployments (nicht indexieren)      | leer                        |
 
 - **Vorschau auf GitHub Pages**: Settings → Pages → Source „GitHub Actions“, dann Workflow
   „Deploy to GitHub Pages“ manuell starten → `https://<user>.github.io/fightflow/` (noindex).
 - **Umzug von Google Sites**: `www.fightflow.at` zeigt derzeit per CNAME auf `ghs.googlehosted.com`.
   Beim neuen Hoster die Domain hinzufügen und den CNAME-Eintrag beim Domain-Anbieter umstellen.
-  Die URLs der alten Seite sollten per Weiterleitung auf die neuen Abschnitte zeigen.

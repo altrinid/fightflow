@@ -35,16 +35,33 @@ const PLANS = [
     price: { de: '49 € / Monat', en: '49€ / month' },
     training: { de: '1 Training pro Woche', en: '1 training per week' },
   },
+  {
+    match: /full/i,
+    price: { de: '79 € / Monat', en: '79€ / month' },
+    training: { de: '3 Trainings pro Woche', en: '3 trainings per week' },
+  },
+  {
+    match: /single/i,
+    price: { de: '20 € (Einzeltraining)', en: '20€ (single pass)' },
+    training: { de: 'Einzeltraining', en: 'Single pass' },
+  },
 ];
+
+/** Where trial sessions take place (shown in the confirmation mail). */
+const GYM_ADDRESS = 'Haymerlegasse 27, Tür 17, 1160 Wien';
+const TRIAL_SHEET = 'Probetraining';
+const TRIAL_HEADERS = ['Zeitstempel', 'Name', 'E-Mail', 'Telefon', 'Wunschtermin', 'Erfahrung', 'Nachricht', 'Sprache'];
 
 const TEXT = {
   en: {
     registrationSubject: 'FightFlow — Registration received 🥊',
     activationSubject: 'FightFlow — Your membership is active 🥊',
+    trialSubject: 'FightFlow — Your free trial training 🥊',
   },
   de: {
     registrationSubject: 'FightFlow — Anmeldung erhalten 🥊',
     activationSubject: 'FightFlow — Deine Mitgliedschaft ist aktiv 🥊',
+    trialSubject: 'FightFlow — Dein Gratis-Probetraining 🥊',
   },
 };
 
@@ -69,18 +86,38 @@ function doPost(e) {
       phone: clean_(p.phone, 40),
       membership: clean_(p.membership, 120),
       month: clean_(p.month, 40),
+      date: clean_(p.date, 80),
       experience: clean_(p.experience, 80),
       message: clean_(p.message, 2000),
       lang: p.lang === 'de' ? 'de' : 'en',
     };
 
-    if (data.name.length < 3 || !isEmail_(data.email) || !data.membership || !data.month || p.consent !== 'yes') {
+    if (data.name.length < 3 || !isEmail_(data.email) || p.consent !== 'yes') {
       return json_({ ok: false, error: 'invalid' });
     }
 
-    const lock = LockService.getScriptLock();
-    lock.waitLock(10000);
-    try {
+    if (p.type === 'trial') {
+      if (!data.date) return json_({ ok: false, error: 'invalid' });
+      withLock_(() =>
+        trialSheet_().appendRow([
+          new Date(),
+          cell_(data.name),
+          cell_(data.email),
+          cell_(data.phone),
+          cell_(data.date),
+          cell_(data.experience),
+          cell_(data.message),
+          data.lang,
+        ]),
+      );
+      sendTrialMail_(data);
+      notifyClub_(data, 'trial');
+      return json_({ ok: true });
+    }
+
+    if (!data.membership || !data.month) return json_({ ok: false, error: 'invalid' });
+
+    withLock_(() => {
       sheet_().appendRow([
         new Date(),
         cell_(data.name),
@@ -94,14 +131,11 @@ function doPost(e) {
         false,
         '',
       ]);
-      const row = sheet_().getLastRow();
-      sheet_().getRange(row, COL['Bezahlt']).insertCheckboxes();
-    } finally {
-      lock.releaseLock();
-    }
+      sheet_().getRange(sheet_().getLastRow(), COL['Bezahlt']).insertCheckboxes();
+    });
 
     sendRegistrationMail_(data);
-    notifyClub_(data);
+    notifyClub_(data, 'membership');
     return json_({ ok: true });
   } catch (err) {
     console.error(err);
@@ -244,17 +278,67 @@ function sendActivationMail_(d) {
   });
 }
 
-function notifyClub_(d) {
+function sendTrialMail_(d) {
+  const de = d.lang === 'de';
+  const lines = de
+    ? [
+        `Hallo ${d.name},`,
+        '',
+        'danke für deine Anmeldung zum Gratis-Probetraining bei FightFlow! 🥊',
+        '',
+        'WUNSCHTERMIN',
+        d.date,
+        '',
+        'ORT',
+        GYM_ADDRESS,
+        '',
+        'Bring bequeme Sportkleidung und eine Wasserflasche mit. Handschuhe und Bandagen stellen wir dir fürs erste Training gerne zur Verfügung.',
+        '',
+        'Falls der Termin doch nicht passt, antworte einfach auf diese E-Mail.',
+        '',
+        'Wir sehen uns im Gym! 🥊',
+        '',
+        'FightFlow',
+      ]
+    : [
+        `Hi ${d.name},`,
+        '',
+        'Thank you for signing up for a free trial training at FightFlow! 🥊',
+        '',
+        'PREFERRED SESSION',
+        d.date,
+        '',
+        'LOCATION',
+        GYM_ADDRESS,
+        '',
+        'Bring comfortable sportswear and a water bottle. We can provide gloves and hand wraps for your first session.',
+        '',
+        "If the session doesn't work for you after all, just reply to this e-mail.",
+        '',
+        'See you in the gym! 🥊',
+        '',
+        'FightFlow',
+      ];
+  MailApp.sendEmail({
+    to: d.email,
+    subject: TEXT[d.lang].trialSubject,
+    body: lines.join('\n'),
+    name: 'FightFlow',
+    replyTo: prop_('REPLY_TO') || undefined,
+  });
+}
+
+function notifyClub_(d, type) {
   const to = prop_('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail();
   if (!to) return;
+  const trial = type === 'trial';
   const body = [
-    'Neue Anmeldung über die Website:',
+    trial ? 'Neue Anmeldung zum Probetraining:' : 'Neue Anmeldung zur Mitgliedschaft:',
     '',
     `Name: ${d.name}`,
     `E-Mail: ${d.email}`,
     `Telefon: ${d.phone || '–'}`,
-    `Mitgliedschaft: ${d.membership}`,
-    `Startmonat: ${d.month}`,
+    ...(trial ? [`Wunschtermin: ${d.date}`] : [`Mitgliedschaft: ${d.membership}`, `Startmonat: ${d.month}`]),
     `Erfahrung: ${d.experience || '–'}`,
     `Sprache: ${d.lang}`,
     '',
@@ -262,7 +346,8 @@ function notifyClub_(d) {
     '',
     `Tabelle: ${SpreadsheetApp.getActive().getUrl()}`,
   ].join('\n');
-  MailApp.sendEmail({ to, subject: `Neue Anmeldung: ${d.name} (${d.membership})`, body, replyTo: d.email });
+  const subject = trial ? `Probetraining: ${d.name} (${d.date})` : `Neue Anmeldung: ${d.name} (${d.membership})`;
+  MailApp.sendEmail({ to, subject, body, replyTo: d.email });
 }
 
 /* ------------------------------------------------------------------------ */
@@ -276,6 +361,26 @@ function bankLines_(lang) {
 
 function planFor_(membership) {
   return PLANS.find((p) => p.match.test(membership)) || null;
+}
+
+function withLock_(fn) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    return fn();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function trialSheet_() {
+  const ss = SpreadsheetApp.getActive();
+  let sheet = ss.getSheetByName(TRIAL_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(TRIAL_SHEET);
+    sheet.appendRow(TRIAL_HEADERS);
+  }
+  return sheet;
 }
 
 function sheet_() {

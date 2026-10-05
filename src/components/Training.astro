@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Icon, { type IconName } from './Icon.astro';
-import { club, schedule } from '../data/site';
+import Accent from './Accent.astro';
+import { club, schedule, photos } from '../data/site';
 import { t, type Lang } from '../i18n';
 
 interface Props {
@@ -9,187 +11,179 @@ interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
-const s = d.training.schedule;
-const icons: IconName[] = ['target', 'users', 'bolt', 'shield'];
+const tr = d.training;
+const icons: IconName[] = ['users', 'bolt', 'shield', 'check'];
 ---
 
-<section class="section section--ink2 training" id="training" aria-labelledby="training-title">
+<section class="section training" id="training" aria-labelledby="training-title">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>{d.training.eyebrow}</p>
-      <h2 class="h2" id="training-title" data-reveal style="--d:80ms">{d.training.title}</h2>
-      <p class="lead" data-reveal style="--d:160ms">{d.training.lead}</p>
+      <p class="eyebrow" data-reveal>{tr.eyebrow}</p>
+      <h2 class="h2" id="training-title" data-reveal style="--d:80ms"><Accent text={tr.title} /></h2>
+      <p class="lead" data-reveal style="--d:160ms">{tr.lead}</p>
     </div>
 
-    <ol class="training__list" role="list">
+    <div class="training__grid">
+      <div class="schedule" data-reveal>
+        <h3 class="schedule__title">
+          <Icon name="clock" size={22} />
+          {tr.scheduleTitle}
+        </h3>
+        <ul class="schedule__list" role="list">
+          {
+            schedule.map((s) => (
+              <li>
+                <span class="schedule__day">{s.day[lang]}</span>
+                <span class="schedule__time">
+                  {s.start}–{s.end}
+                  {tr.clock && <span class="schedule__unit"> {tr.clock}</span>}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <address class="schedule__loc">
+          <Icon name="pin" size={20} />
+          <span>
+            <strong>{club.gym.street}, {club.gym.door[lang]}</strong><br />
+            {club.gym.postalCode} {club.gym.city[lang]} – {club.gym.district}
+          </span>
+        </address>
+        <div class="schedule__actions">
+          <a class="btn btn--primary" href="#join" data-form-type="trial">{tr.book}<Icon name="arrow" /></a>
+          <a class="btn btn--ghost" href={club.maps.directions} rel="noopener"><Icon name="route" size={18} />{tr.directions}</a>
+        </div>
+      </div>
+
+      <ul class="training__points" role="list">
+        {
+          tr.items.map((item, i) => (
+            <li data-reveal style={`--d:${i * 80}ms`}>
+              <span class="training__icon">
+                <Icon name={icons[i] ?? 'check'} size={22} />
+              </span>
+              <div>
+                <h3 class="training__point-title">{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="training__scroller" data-scroller role="region" aria-label={tr.photosLabel}>
+    <ul class="training__photos" role="list">
       {
-        d.training.items.map((item, i) => (
-          <li class="training__item" data-reveal style={`--d:${i * 80}ms`}>
-            <span class="training__num" aria-hidden="true">
-              0{i + 1}
-            </span>
-            <div class="training__body">
-              <h3 class="h3">{item.title}</h3>
-              <p>{item.text}</p>
-            </div>
-            <span class="training__icon">
-              <Icon name={icons[i] ?? 'target'} size={22} />
-            </span>
+        photos.training.map((p, i) => (
+          <li data-reveal style={`--d:${i * 70}ms`}>
+            <Image
+              src={p.src}
+              alt={p.alt[lang]}
+              widths={[320, 480, 640, 800]}
+              sizes="(max-width: 700px) 70vw, 25vw"
+              quality={68}
+              loading="lazy"
+              decoding="async"
+              style={p.position ? `object-position:${p.position}` : undefined}
+            />
           </li>
         ))
       }
-    </ol>
-
-    <div class="schedule" data-reveal>
-      <div class="schedule__intro">
-        <h3 class="h3 schedule__title">
-          <Icon name="clock" size={22} />
-          {s.title}
-        </h3>
-        {schedule.length === 0 && <p class="schedule__empty">{s.empty}</p>}
-        <p class="schedule__loc">
-          <Icon name="pin" size={18} />
-          <span><strong>{s.location}:</strong> {s.locationValue}</span>
-        </p>
-      </div>
-
-      {
-        schedule.length > 0 ? (
-          <table class="schedule__table">
-            <tbody>
-              {schedule.map((slot) => (
-                <tr>
-                  <th scope="row">{slot.day[lang]}</th>
-                  <td>{slot.time}</td>
-                  <td>{slot.title[lang]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div class="schedule__actions">
-            <a class="btn btn--primary" href={club.phoneHref}>
-              <Icon name="phone" size={18} />
-              {s.call}
-            </a>
-            <a class="btn btn--ghost" href={`mailto:${club.email}`}>
-              <Icon name="mail" size={18} />
-              {s.write}
-            </a>
-          </div>
-        )
-      }
+    </ul>
     </div>
   </div>
 </section>
 
 <style>
-  .training__list {
+  .training__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    list-style: none;
-    border-top: 1px solid var(--c-line);
-  }
-
-  .training__item {
-    position: relative;
-    display: grid;
-    grid-template-columns: clamp(2.75rem, 2.3rem + 2vw, 4.25rem) minmax(0, 1fr) auto;
-    gap: clamp(1rem, 2vw, 1.75rem);
-    align-items: start;
-    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(0rem, 2vw, 1.5rem);
-    border-bottom: 1px solid var(--c-line);
-    transition: background-color 0.3s;
-  }
-
-  .training__item:nth-child(odd) {
-    border-right: 1px solid var(--c-line);
-  }
-
-  .training__item:hover {
-    background: rgb(255 255 255 / 0.025);
-  }
-
-  .training__num {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 2rem + 2vw, 3.75rem);
-    line-height: 0.9;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--c-line-strong);
-    transition:
-      color 0.3s,
-      -webkit-text-stroke-color 0.3s;
-  }
-
-  .training__item:hover .training__num {
-    color: var(--c-red);
-    -webkit-text-stroke-color: var(--c-red);
-  }
-
-  .training__body {
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .training__body p {
-    color: var(--c-text-dim);
-  }
-
-  .training__icon {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border: 1px solid var(--c-line-strong);
-    border-radius: 50%;
-    color: var(--c-red);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(1rem, 2.5vw, 2rem);
+    align-items: stretch;
   }
 
   .schedule {
     display: grid;
-    grid-template-columns: minmax(0, 1.3fr) auto;
-    gap: var(--space-m);
-    align-items: center;
-    margin-top: var(--space-l);
+    gap: 1.25rem;
+    align-content: start;
     padding: clamp(1.5rem, 3vw, 2.5rem);
     border: 1px solid var(--c-line);
-    border-left: 4px solid var(--c-red);
+    border-top: 4px solid var(--c-red);
     border-radius: var(--radius-l);
     background:
-      radial-gradient(60% 120% at 100% 0%, rgb(225 29 39 / 0.14), transparent 70%),
+      radial-gradient(70% 100% at 100% 0%, rgb(200 69 58 / 0.16), transparent 70%),
       var(--c-ink-3);
-  }
-
-  .schedule__intro {
-    display: grid;
-    gap: 0.75rem;
   }
 
   .schedule__title {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .schedule__title :global(svg) {
-    color: var(--c-red);
+    color: var(--c-red-text);
   }
 
-  .schedule__empty {
-    max-width: 56ch;
+  .schedule__list {
+    display: grid;
+    list-style: none;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .schedule__list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .schedule__day {
+    font-size: var(--step-1);
+    font-weight: 700;
+  }
+
+  .schedule__time {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .schedule__unit {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--c-text-dim);
   }
 
   .schedule__loc {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9375rem;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-style: normal;
+    line-height: 1.5;
+    color: var(--c-text-dim);
+  }
+
+  .schedule__loc strong {
+    color: var(--c-text);
   }
 
   .schedule__loc :global(svg) {
     flex: none;
-    color: var(--c-red);
+    margin-top: 0.15rem;
+    color: var(--c-red-text);
   }
 
   .schedule__actions {
@@ -198,43 +192,107 @@ const icons: IconName[] = ['target', 'users', 'bolt', 'shield'];
     gap: 0.75rem;
   }
 
-  .schedule__table {
+  .training__points {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1rem);
+    list-style: none;
+  }
+
+  .training__points li {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-l);
+    background: var(--c-ink-2);
+  }
+
+  .training__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: rgb(200 69 58 / 0.14);
+    color: var(--c-red-text);
+  }
+
+  .training__point-title {
+    margin-bottom: 0.35rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .training__points p {
+    color: var(--c-text-dim);
+    font-size: 0.9375rem;
+  }
+
+  .training__photos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1vw, 0.9rem);
+    margin-top: clamp(1rem, 2.5vw, 2rem);
+    list-style: none;
+  }
+
+  .training__photos li {
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    background: var(--c-ink-3);
+  }
+
+  .training__photos :global(img) {
     width: 100%;
-    border-collapse: collapse;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
   }
 
-  .schedule__table th,
-  .schedule__table td {
-    padding: 0.7rem 0.75rem;
-    border-bottom: 1px solid var(--c-line);
-    text-align: left;
+  .training__photos li:hover :global(img) {
+    transform: scale(1.04);
   }
 
-  .schedule__table th {
-    font-weight: 700;
-  }
-
-  @media (max-width: 860px) {
-    .training__list {
-      grid-template-columns: 1fr;
-    }
-
-    .training__item:nth-child(odd) {
-      border-right: 0;
-    }
-
-    .schedule {
+  @media (max-width: 960px) {
+    .training__grid {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (max-width: 420px) {
-    .training__item {
-      grid-template-columns: 2.75rem minmax(0, 1fr);
+  @media (max-width: 700px) {
+    .training__scroller {
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
     }
 
-    .training__icon {
+    .training__scroller::-webkit-scrollbar {
       display: none;
+    }
+
+    .training__photos {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .training__photos li {
+      flex: 0 0 66%;
+      scroll-snap-align: start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .training__points {
+      grid-template-columns: 1fr;
     }
   }
 </style>

@@ -1,0 +1,208 @@
+{
+  "source": "https://www.fightflow.at/",
+  "importedAt": "2026-10-05T18:09:20.558Z",
+  "pages": [
+    {
+      "url": "https://www.fightflow.at/",
+      "slug": "home",
+      "title": "FightFlow",
+      "textBlocks": 34,
+      "images": [
+        {
+          "file": "src/assets/photos/original/home-01.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vL3PbmdzcCXFBUTIpIq_Oj5smZ1mlDICAL5DAntpR_OdXdNCTINE7JrVeGbgF0gUTwP2ZBfXjH7CiXFGk6q_9-BXDxxEhSCmRTQXwmkgAQtX-RpOR8ryx2zTr4ssHmTIh86IKkcimhS72C8JNALibdMq71cvv-zhIRAqnWFpiWOlgR7tB4PAvR8I-2WKk=w2400",
+          "bytes": 57077
+        },
+        {
+          "file": "src/assets/photos/original/home-02.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v7_xX20RiSdJrWQhkZW5YHtT4eup7W4YRTS4XL_iDZawEPaIsTrLzzkP7fRcsZjsCF_NsSfMXzLQYWig7SZylgdva-0NAlI-SipbwBN-t8MIbA_8_pGxpj9QFxCTIV39OO7jlkZK8WZQIGzHI6SV26WxhCr2m2Kx8_MF5N8dqCH8v53wFCl4qpVPL0v7JSXw0XN58Xq8KfnXtyKxrmh9EO6ju7JDq2H6Cqh_wQ=w2400",
+          "bytes": 846600
+        },
+        {
+          "file": "src/assets/photos/original/home-03.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72skAq_xZb-lQrjKj_c6OokG30sFz7jEYFELtsucqCsJldby_0a_gLVfC7i5ZrGu3gOSKlwSzClzHVqI5_DFIhbhRdodftOCfukrcWIpKDt18N-CSWMw1BLmjLtAjHZ40HOJqLis8AbfsF_D0-pvvqAzPNND5lKzLJKcFp1JSDUnBxsvycRUlyIPCdRT6W8dVI--sl7r8XgYCGtvFNaJKu3aqbC7M8og2qWJSbG0HeQ=w2400",
+          "bytes": 138342
+        },
+        {
+          "file": "src/assets/photos/original/home-04.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vuY4fhmIDq5fMKtMx6C3XeNJtkIJymgr_PpeiqkuciGBHENec3wnzJxjyoMwq-vCXPVEwD-_PMKkC0opMWXESbJb5AotB7TJ70kLkARjXryKevTZFWxtjgO9x6Ob7_MG0cAn93pO_Z6-0T3EQXc9FBJ1K6kchvsgt_OLm98L6hKcru3Gwe_spvQCSHsWpwdkkXOVKvWClDiI2zqewWTZU59YzTAz4cbBUvn5YbbF0=w2400",
+          "bytes": 964823
+        },
+        {
+          "file": "src/assets/photos/original/home-05.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72s5srlwyMgVpdyQlJxUOo5LRP3KTPL6thoWMANe1TVQM5UJm5BPr43oscq-RYzrCXstyo15XuvB995LTJa8TI8-r8Lwofzb2C1eK75QF2skLoRpB9idZoRJStNxJ1MePWJ-2G-EXHeSJwY4VBoh4qh7a3F1E71_uIVlJjCRdBNUN8G2RhKV7ND11lLMoLQ0N82wwNzz-3k2wnkh3EfBE2M8suPRcVfvKIMfOm4F=w2400",
+          "bytes": 1872522
+        },
+        {
+          "file": "src/assets/photos/original/home-06.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72tohPCQiHXoOj7Nk3fzA4UBl2FlCWuoOIF7qlVScayB29aH_Lm3ekgIAOPtHEjh9IN5rlz6wC7LUR5MTSqZSuA1v2CA7hlVxdFdMdOMV1FrwbXhIoZnZNIA8LErUOkscX8ACdRIEZ_UhIDNvG5gxn47Mt9z7qkHCsph63Eh1rGC7w5BifdYcLzzicPjnONiE-asbZr1eFus1miLXmc9TRwAMuOF29YHO52lP_1e=w2400",
+          "bytes": 338532
+        },
+        {
+          "file": "src/assets/photos/original/home-07.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72uzOPshNLOhjArSF4IFViJERy4VUiJMpwwYBDUTgcWktX747jWPnOKqb7vzofq5r5xk8mONiv51A6t2swSdDPZODpCkvUlx7mXWVR-UXFLNAzuA0NapgkbNxJF9aGzIYkCAc4vuvkFcqdsEGf_ixhB2pMVPTaA3ldEVWdmIN2pDQM8KML2O86y60sAphE_RHmsauHG0K1dl0_pDOCcJ3BRYXNQQ1sud43A0EopTnG4=w2400",
+          "bytes": 352444
+        },
+        {
+          "file": "src/assets/photos/original/home-08.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72tv91Km7fWCCLJw3i6qZGeU8-jP-0G8cnx0CuS6OlR2WwBeaHws-3wKwkZ0a-kqV4QoP1eQGWpuCBuUa-gS2O0fOudv-4aHTBT8fV7uGBU03Qs5mQW0X8KB0XFJ0jgyzvi7zUvgyyN2091TDPz8Oy5hPv5G_jo9POelvQ49RUjYpr34mHXv9NFfxYF_ouUpNnv_92qh7UzsOLrJv5Jga3rTYee6leMhd5Oi4Fk62BM=w2400",
+          "bytes": 383414
+        },
+        {
+          "file": "src/assets/photos/original/home-09.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72uW2BLJfWOdf8-YftjPMSP5AHfKZEA69c_FUft7Wr5E4PP21A6KgltPab8stX6UH8elAkUaocL7kOQTqzCHYcyt_US-NfnIRqU88D201j7821sSeRYNpwLLJOWZZw7rVDgpKsg-N0qzl3RJVrnm8__VwDEXeHphXw8p8TF5Q4yc5P9sLgZtIqgOvC1DcCv2WISLNXCLCMkH7Sldn2NYMuSz3Oe0qTeVQOMr8UOpgBQ=w2400",
+          "bytes": 446651
+        },
+        {
+          "file": "src/assets/photos/original/home-11.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v68Spr6KfJP8wEl2BBz5I0Xt_TLeNrZNkLV1VwEZYuohleGWD_2F4lI0gDRq2aYnNO10djYBVVhLkU4O1atlj7VLGhnPIfpwbnB4XvySmP59XulhUrd3ZgeRgHC833-mQBt6LNPhxl7SlYbzgzjD40KXQOplBY1Bp0JfsMLxD41W4IJ0hqiC2kocUb=w2400",
+          "bytes": 4448460
+        },
+        {
+          "file": "src/assets/photos/original/home-12.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v3uDdYTIsWwzBFtRw6K136Zj_LM0S05gL69roH7l2Fl6eBv1kPebNZ7BKhXxWsJeSSGjURRz4VYqXh_x04bs-5SEioYCeFj4Gtsdsgj8dwsWbBEatb7bGePLI7KRU02BSZMOTeB3O-dP7Mdjha8KWvKqoJ3j4hNPuvo4hANXFYOeYGtL6F2ElwqiSyhmI=w2400",
+          "bytes": 71508
+        },
+        {
+          "file": "src/assets/photos/original/home-12.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v3uDdYTIsWwzBFtRw6K136Zj_LM0S05gL69roH7l2Fl6eBv1kPebNZ7BKhXxWsJeSSGjURRz4VYqXh_x04bs-5SEioYCeFj4Gtsdsgj8dwsWbBEatb7bGePLI7KRU02BSZMOTeB3O-dP7Mdjha8KWvKqoJ3j4hNPuvo4hANXFYOeYGtL6F2ElwqiSyhmI=w2400",
+          "bytes": 71508
+        },
+        {
+          "file": "src/assets/photos/original/home-12.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v3uDdYTIsWwzBFtRw6K136Zj_LM0S05gL69roH7l2Fl6eBv1kPebNZ7BKhXxWsJeSSGjURRz4VYqXh_x04bs-5SEioYCeFj4Gtsdsgj8dwsWbBEatb7bGePLI7KRU02BSZMOTeB3O-dP7Mdjha8KWvKqoJ3j4hNPuvo4hANXFYOeYGtL6F2ElwqiSyhmI=w2400",
+          "bytes": 71508
+        },
+        {
+          "file": "src/assets/photos/original/home-12.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v3uDdYTIsWwzBFtRw6K136Zj_LM0S05gL69roH7l2Fl6eBv1kPebNZ7BKhXxWsJeSSGjURRz4VYqXh_x04bs-5SEioYCeFj4Gtsdsgj8dwsWbBEatb7bGePLI7KRU02BSZMOTeB3O-dP7Mdjha8KWvKqoJ3j4hNPuvo4hANXFYOeYGtL6F2ElwqiSyhmI=w2400",
+          "bytes": 71508
+        }
+      ]
+    },
+    {
+      "url": "https://www.fightflow.at/membership-registration",
+      "slug": "membership-registration",
+      "title": "FightFlow - Membership Registration",
+      "textBlocks": 5,
+      "images": [
+        {
+          "file": "src/assets/photos/original/home-01.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vL3PbmdzcCXFBUTIpIq_Oj5smZ1mlDICAL5DAntpR_OdXdNCTINE7JrVeGbgF0gUTwP2ZBfXjH7CiXFGk6q_9-BXDxxEhSCmRTQXwmkgAQtX-RpOR8ryx2zTr4ssHmTIh86IKkcimhS72C8JNALibdMq71cvv-zhIRAqnWFpiWOlgR7tB4PAvR8I-2WKk=w2400",
+          "bytes": 57077
+        },
+        {
+          "file": "src/assets/photos/original/home-11.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v68Spr6KfJP8wEl2BBz5I0Xt_TLeNrZNkLV1VwEZYuohleGWD_2F4lI0gDRq2aYnNO10djYBVVhLkU4O1atlj7VLGhnPIfpwbnB4XvySmP59XulhUrd3ZgeRgHC833-mQBt6LNPhxl7SlYbzgzjD40KXQOplBY1Bp0JfsMLxD41W4IJ0hqiC2kocUb=w2400",
+          "bytes": 4448460
+        }
+      ]
+    },
+    {
+      "url": "https://www.fightflow.at/free-trial-training",
+      "slug": "free-trial-training",
+      "title": "FightFlow - Free Trial Training",
+      "textBlocks": 1,
+      "images": [
+        {
+          "file": "src/assets/photos/original/home-01.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vL3PbmdzcCXFBUTIpIq_Oj5smZ1mlDICAL5DAntpR_OdXdNCTINE7JrVeGbgF0gUTwP2ZBfXjH7CiXFGk6q_9-BXDxxEhSCmRTQXwmkgAQtX-RpOR8ryx2zTr4ssHmTIh86IKkcimhS72C8JNALibdMq71cvv-zhIRAqnWFpiWOlgR7tB4PAvR8I-2WKk=w2400",
+          "bytes": 57077
+        },
+        {
+          "file": "src/assets/photos/original/home-11.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v68Spr6KfJP8wEl2BBz5I0Xt_TLeNrZNkLV1VwEZYuohleGWD_2F4lI0gDRq2aYnNO10djYBVVhLkU4O1atlj7VLGhnPIfpwbnB4XvySmP59XulhUrd3ZgeRgHC833-mQBt6LNPhxl7SlYbzgzjD40KXQOplBY1Bp0JfsMLxD41W4IJ0hqiC2kocUb=w2400",
+          "bytes": 4448460
+        }
+      ]
+    },
+    {
+      "url": "https://www.fightflow.at/contact",
+      "slug": "contact",
+      "title": "FightFlow - Contact",
+      "textBlocks": 9,
+      "images": [
+        {
+          "file": "src/assets/photos/original/home-01.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vL3PbmdzcCXFBUTIpIq_Oj5smZ1mlDICAL5DAntpR_OdXdNCTINE7JrVeGbgF0gUTwP2ZBfXjH7CiXFGk6q_9-BXDxxEhSCmRTQXwmkgAQtX-RpOR8ryx2zTr4ssHmTIh86IKkcimhS72C8JNALibdMq71cvv-zhIRAqnWFpiWOlgR7tB4PAvR8I-2WKk=w2400",
+          "bytes": 57077
+        },
+        {
+          "file": "src/assets/photos/original/home-11.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v68Spr6KfJP8wEl2BBz5I0Xt_TLeNrZNkLV1VwEZYuohleGWD_2F4lI0gDRq2aYnNO10djYBVVhLkU4O1atlj7VLGhnPIfpwbnB4XvySmP59XulhUrd3ZgeRgHC833-mQBt6LNPhxl7SlYbzgzjD40KXQOplBY1Bp0JfsMLxD41W4IJ0hqiC2kocUb=w2400",
+          "bytes": 4448460
+        }
+      ]
+    },
+    {
+      "url": "https://www.fightflow.at/about",
+      "slug": "about",
+      "title": "FightFlow - About",
+      "textBlocks": 5,
+      "images": [
+        {
+          "file": "src/assets/photos/original/home-01.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vL3PbmdzcCXFBUTIpIq_Oj5smZ1mlDICAL5DAntpR_OdXdNCTINE7JrVeGbgF0gUTwP2ZBfXjH7CiXFGk6q_9-BXDxxEhSCmRTQXwmkgAQtX-RpOR8ryx2zTr4ssHmTIh86IKkcimhS72C8JNALibdMq71cvv-zhIRAqnWFpiWOlgR7tB4PAvR8I-2WKk=w2400",
+          "bytes": 57077
+        },
+        {
+          "file": "src/assets/photos/original/home-11.png",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72v68Spr6KfJP8wEl2BBz5I0Xt_TLeNrZNkLV1VwEZYuohleGWD_2F4lI0gDRq2aYnNO10djYBVVhLkU4O1atlj7VLGhnPIfpwbnB4XvySmP59XulhUrd3ZgeRgHC833-mQBt6LNPhxl7SlYbzgzjD40KXQOplBY1Bp0JfsMLxD41W4IJ0hqiC2kocUb=w2400",
+          "bytes": 4448460
+        },
+        {
+          "file": "src/assets/photos/original/about-04.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72vZD4rOOq0egIJbSdTULaUNZR1a6l-WhdNAPZi8Ykv2AN3q8tpvnNNqlyZTseRVRZKvHeZ88WAcFFvHpIEgt_s6MFEwbU0JfTGjamZtc-5VVHCdvtTO4xYwNY-52Tm3DWBsdde5-vuA7oLzEpTr_RTVn3jxVGFO5jFt66mFeys3XnDv8gEtsNJEBaof=w2400",
+          "bytes": 517607
+        },
+        {
+          "file": "src/assets/photos/original/about-05.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72tKsH67vJ8o0-hc49LfgPnKjDH7zlyOfZAX7U-tIYC93YSZJzAjR-_PQ_GiflktS-Ul4E1hm4Yu4VhlZoVTL0BZSDP1vQFjpQWnOt79qY-drJYptE3C__mj_xThZk0DMO8mwBsO49fv_WKawbmqhmqOq2KOH0LXp_qMT83-WDXhgiuHKbsxuI5c7PVAkGc=w2400",
+          "bytes": 355468
+        },
+        {
+          "file": "src/assets/photos/original/about-06.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72uNcb0sjebDd2ZUAjqozIgfoRyCZlS0Zww69FLNwDWIOojbF0d1rE_90kkEZLM8TMudksL5dElQIBn3Eroq9-ML3RCF2O28Yh2GQUfxpvcvGjBP4w9UyD4W2xLNkpLqtn-kVOCmXiYPmonCMiM-YswOhFORNemuHmYpwZlfeZ_Q-Wy7DjR1al4KnvBp=w2400",
+          "bytes": 391082
+        },
+        {
+          "file": "src/assets/photos/original/about-07.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72uHAhPT_7XXrAkIoNLwPov0KkFOQnt9aOyxkGSNMH7LYcw-7HM-kIGvwveXuuiAnbEsEyukqsW6iI4t01inz7TBdEnJZj_YFvx98gsglVE2sVZYts2OAa1KNcrgDKFjy3erBOI54rBLCJ04TwlnBNZ1hxIjJaYeFAMCgSTmyDhTvEZx4N8Vr5ZZ30P4vIw=w2400",
+          "bytes": 412744
+        },
+        {
+          "file": "src/assets/photos/original/about-08.jpg",
+          "alt": "",
+          "source": "https://lh7-us.googleusercontent.com/sitesv-images-rt/AMxu72t239e0KYR4f24u5qZ4m2_1Ho4JpGDDrnl0ejHgbmu-jYXMIFCzDbAAZhiR1kYs3Wbb5L7Wo44TO6vSHfyKLtA_32t11sTkyH1im7i53q0iQGrdxyjERdSlxlYSmlpzQyPqifx7tPzke3OiO1PGvVuLRjiMOrsecqgur4aN0oDz00FsJlelsksEQ2dosgA=w2400",
+          "bytes": 153029
+        }
+      ]
+    }
+  ]
+}

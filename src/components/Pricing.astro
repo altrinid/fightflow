@@ -1,8 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import Accent from './Accent.astro';
-import FlowLines from './FlowLines.astro';
-import { memberships } from '../data/site';
+import { prices } from '../data/site';
 import { t, type Lang } from '../i18n';
 
 interface Props {
@@ -11,125 +10,105 @@ interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
-const p = d.pricing.plan;
-const basic = memberships[0]!;
+const pr = d.pricing;
+const meta = (p: (typeof prices)[number]) =>
+  p.monthly && p.trainingsPerWeek ? pr.perWeek(p.trainingsPerWeek) : p.id === 'single' ? pr.perSession : '';
 ---
 
 <section class="section section--bone pricing" id="pricing" aria-labelledby="pricing-title">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow" data-reveal>{d.pricing.eyebrow}</p>
-      <h2 class="h2" id="pricing-title" data-reveal style="--d:80ms"><Accent text={d.pricing.title} /></h2>
-      <p class="lead" data-reveal style="--d:160ms">{d.pricing.lead}</p>
+      <p class="eyebrow" data-reveal>{pr.eyebrow}</p>
+      <h2 class="h2" id="pricing-title" data-reveal style="--d:80ms"><Accent text={pr.title} /></h2>
+      <p class="lead" data-reveal style="--d:160ms">{pr.lead}</p>
     </div>
 
-    <div class="pricing__grid">
-      <article class="plan" aria-labelledby="plan-basic" data-reveal>
-        <FlowLines id="plan" lines={6} class="plan__flow" />
-        <div class="plan__head">
-          <span class="plan__badge">{p.badge}</span>
-          <h3 class="plan__name" id="plan-basic">{p.name}</h3>
-          <p class="plan__per">{p.per}</p>
-        </div>
+    <ul class="prices" role="list">
+      {
+        prices.map((p, i) => (
+          <li class:list={['price', `price--${p.id}`, { 'price--featured': p.featured }]} data-reveal style={`--d:${i * 80}ms`}>
+            {p.featured && <span class="price__badge">{pr.best}</span>}
+            <h3 class="price__name">{p.name[lang]}</h3>
+            <p class="price__amount">
+              {p.price === 0 ? (
+                <span class="price__num">{pr.free}</span>
+              ) : lang === 'en' ? (
+                <>
+                  <span class="price__cur">€</span>
+                  <span class="price__num">{p.price}</span>
+                </>
+              ) : (
+                <>
+                  <span class="price__num">{p.price}</span>
+                  <span class="price__cur">€</span>
+                </>
+              )}
+              {p.monthly && <span class="price__period">{pr.perMonth}</span>}
+            </p>
+            {meta(p) && <p class="price__meta">{meta(p)}</p>}
+            <p class="price__note">{pr.notes[p.id]}</p>
+            <a
+              class:list={['btn', p.featured || p.id === 'trial' ? 'btn--primary' : 'btn--ghost', 'btn--block']}
+              href="#join"
+              data-form-type={p.id === 'trial' ? 'trial' : 'membership'}
+              data-membership={p.id === 'trial' ? undefined : p.id}
+            >
+              {p.id === 'trial' ? pr.ctaTrial : pr.ctaChoose}
+              <Icon name="arrow" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
 
-        <p class="plan__price">
-          {lang === 'en' && <span class="plan__cur">{p.currency}</span>}
-          <span class="plan__amount">{basic.priceEur}</span>
-          {lang !== 'en' && <span class="plan__cur">{p.currency}</span>}
-          <span class="plan__period">{p.period}</span>
-        </p>
-
-        <ul class="plan__features" role="list">
-          {
-            p.features.map((f) => (
-              <li>
-                <Icon name="check" size={18} />
-                {f}
-              </li>
-            ))
-          }
-        </ul>
-
-        <a class="btn btn--primary btn--block" href="#join" data-membership={basic.id}>
-          {p.cta}<Icon name="arrow" />
-        </a>
-      </article>
-
-      <div class="pricing__side">
-        <div class="steps" data-reveal style="--d:120ms">
-          <h3 class="h3">{d.pricing.steps.title}</h3>
-          <ol role="list">
-            {
-              d.pricing.steps.items.map((step, i) => (
-                <li>
-                  <span class="steps__n" aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <h4>{step.title}</h4>
-                    <p>{step.text}</p>
-                  </div>
-                </li>
-              ))
-            }
-          </ol>
-        </div>
-
-        <div class="more" data-reveal style="--d:200ms">
-          <div>
-            <h3 class="h3">{d.pricing.more.title}</h3>
-            <p>{d.pricing.more.text}</p>
-          </div>
-          <a class="btn btn--ghost" href="#join" data-membership="other">
-            {d.pricing.more.cta}<Icon name="arrow" />
-          </a>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
 <style>
-  .pricing__grid {
+  .prices {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: clamp(1rem, 2vw, 1.5rem);
-    align-items: stretch;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    list-style: none;
   }
 
-  .plan {
+  .price {
     position: relative;
-    isolation: isolate;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: clamp(1.75rem, 3.5vw, 3rem);
+    gap: 0.6rem;
+    padding: clamp(1.5rem, 2.5vw, 2rem);
+    border: 1px solid var(--c-line-bone);
     border-radius: var(--radius-l);
+    background: #f8f5ef;
+    transition:
+      transform 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .price:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 50px -30px rgb(20 19 18 / 0.45);
+  }
+
+  .price--trial {
+    border-color: rgb(200 69 58 / 0.45);
+  }
+
+  .price--featured {
+    border-color: transparent;
     background:
-      radial-gradient(80% 60% at 100% 0%, rgb(225 29 39 / 0.35), transparent 65%),
+      radial-gradient(90% 60% at 100% 0%, rgb(200 69 58 / 0.4), transparent 65%),
       var(--c-ink);
     color: var(--c-text);
-    overflow: hidden;
     color-scheme: dark;
-    box-shadow: 0 40px 80px -40px rgb(20 19 18 / 0.6);
+    box-shadow: 0 40px 80px -40px rgb(20 19 18 / 0.7);
   }
 
-  .plan :global(.plan__flow) {
+  .price__badge {
     position: absolute;
-    inset: auto -20% -10% -20%;
-    z-index: -1;
-    width: 140%;
-    height: 70%;
-    opacity: 0.35;
-  }
-
-  .plan__head {
-    display: grid;
-    gap: 0.4rem;
-    justify-items: start;
-  }
-
-  .plan__badge {
+    top: -0.8rem;
+    left: clamp(1.5rem, 2.5vw, 2rem);
     padding: 0.35rem 0.8rem;
     border-radius: 999px;
     background: var(--c-red);
@@ -140,157 +119,91 @@ const basic = memberships[0]!;
     text-transform: uppercase;
   }
 
-  .plan__name {
-    margin-top: 0.75rem;
+  .price__name {
     font-family: var(--font-display);
-    font-size: var(--step-3);
-    line-height: 1;
-    letter-spacing: 0.02em;
+    font-size: var(--step-2);
+    font-weight: 400;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
   }
 
-  .plan__per {
-    color: var(--c-text-dim);
-  }
-
-  .plan__price {
+  .price__amount {
     display: flex;
     align-items: baseline;
-    gap: 0.25rem;
-    padding-block: 1.25rem;
-    border-block: 1px solid var(--c-line);
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin-top: 0.25rem;
     font-family: var(--font-display);
-    line-height: 0.85;
+    line-height: 0.9;
   }
 
-  .plan__amount {
-    font-size: clamp(5rem, 3.5rem + 6vw, 8.5rem);
-    letter-spacing: -0.01em;
+  .price__num {
+    font-size: clamp(3.25rem, 2.4rem + 3vw, 4.75rem);
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
   }
 
-  .plan__cur {
-    font-size: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
-    color: var(--c-red);
+  .price--trial .price__num {
+    color: var(--c-red-600);
   }
 
-  .plan__period {
-    margin-left: 0.5rem;
+  .price__cur {
+    font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+    color: var(--c-red-600);
+  }
+
+  .price--featured .price__cur {
+    color: var(--c-red-text);
+  }
+
+  .price__period {
+    margin-left: 0.35rem;
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--c-text-dim);
-  }
-
-  .plan__features {
-    display: grid;
-    gap: 0.8rem;
-    list-style: none;
-  }
-
-  .plan__features li {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-  }
-
-  .plan__features :global(svg) {
-    flex: none;
-    padding: 3px;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    background: rgb(225 29 39 / 0.18);
-    color: var(--c-red);
-  }
-
-  .plan .btn {
-    margin-top: auto;
-  }
-
-  .pricing__side {
-    display: grid;
-    gap: clamp(1rem, 2vw, 1.5rem);
-    grid-template-rows: 1fr auto;
-  }
-
-  .steps,
-  .more {
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    border: 1px solid var(--c-line-bone);
-    border-radius: var(--radius-l);
-    background: #f8f5ef;
-  }
-
-  .steps ol {
-    position: relative;
-    display: grid;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    list-style: none;
-  }
-
-  .steps ol::before {
-    content: '';
-    position: absolute;
-    left: 1.2rem;
-    top: 1.5rem;
-    bottom: 1.5rem;
-    width: 2px;
-    background: repeating-linear-gradient(to bottom, var(--c-line-bone) 0 6px, transparent 6px 12px);
-  }
-
-  .steps li {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .steps__n {
-    display: grid;
-    place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-    background: var(--c-ink);
-    color: #fff;
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-  }
-
-  .steps li:last-child .steps__n {
-    background: var(--c-red);
-  }
-
-  .steps h4 {
-    margin: 0.35rem 0 0.2rem;
-    font-size: var(--step-1);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  .steps p,
-  .more p {
     color: var(--c-on-bone-dim);
   }
 
-  .more {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem;
+  .price--featured .price__period,
+  .price--featured .price__meta,
+  .price--featured .price__note {
+    color: var(--c-text-dim);
   }
 
-  .more > div {
-    display: grid;
-    gap: 0.4rem;
-    max-width: 34ch;
+  .price__meta {
+    font-weight: 700;
   }
 
-  @media (max-width: 900px) {
-    .pricing__grid {
+  .price--featured .price__meta {
+    color: var(--c-text);
+  }
+
+  .price__note {
+    flex: 1;
+    color: var(--c-on-bone-dim);
+    font-size: 0.9375rem;
+  }
+
+  .price .btn {
+    margin-top: 0.75rem;
+  }
+
+  .price--featured .btn--ghost {
+    --btn-fg: var(--c-text);
+    --btn-bd: var(--c-line-strong);
+  }
+
+
+  @media (max-width: 1100px) {
+    .prices {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 1.75rem;
+    }
+
+  }
+
+  @media (max-width: 600px) {
+    .prices {
       grid-template-columns: 1fr;
     }
   }

@@ -9,7 +9,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const d = t(lang);
-const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
+const icons: IconName[] = ['pulse', 'users', 'target'];
 ---
 
 <section class="section section--bone why" id="why" aria-labelledby="why-title">
@@ -60,7 +60,7 @@ const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
 
   .why__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(0.75rem, 1.5vw, 1.25rem);
     list-style: none;
   }
@@ -84,7 +84,7 @@ const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
 
   .why__card:hover {
     transform: translateY(-4px);
-    border-color: rgb(225 29 39 / 0.45);
+    border-color: rgb(200 69 58 / 0.45);
     box-shadow: 0 24px 48px -28px rgb(20 19 18 / 0.35);
   }
 
@@ -114,11 +114,6 @@ const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
     color: var(--c-on-bone-dim);
   }
 
-  @media (max-width: 1060px) {
-    .why__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
 
   @media (max-width: 760px) {
     .why__head {
@@ -126,7 +121,7 @@ const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
     }
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 860px) {
     .why__grid {
       grid-template-columns: 1fr;
     }

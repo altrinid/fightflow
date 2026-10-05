@@ -19,3 +19,6 @@ npm-debug.log*
 
 # local tooling output
 .lighthouse/
+
+# raw import from the old site (re-create with `npm run import:original`)
+src/assets/photos/original/

@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { club, memberships, formEndpoint } from '../data/site';
+import { club, prices, schedule, forms, formEndpoint } from '../data/site';
 import { t, route, type Lang } from '../i18n';
 
 interface Props {
@@ -12,15 +12,33 @@ const d = t(lang);
 const r = d.register;
 const locale = lang === 'de' ? 'de-AT' : 'en-GB';
 
-// Start months: this month + the next five. The client script refreshes the
-// list on load, so a page built months ago never offers months in the past.
+// Upcoming sessions for the trial booking (server-rendered fallback; the client
+// script rebuilds the list from the same data so it never shows past dates).
+const sessions = schedule.map((s) => ({ weekday: s.weekday, start: s.start, end: s.end }));
 const now = new Date();
+const dayFmt = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+const iso = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+const upcoming: { label: string; iso: string }[] = [];
+for (let i = 0; upcoming.length < 6 && i < 21; i++) {
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+  for (const s of sessions) {
+    if (s.weekday === date.getDay()) upcoming.push({ label: `${dayFmt.format(date)} · ${s.start}–${s.end}`, iso: iso(date) });
+  }
+}
+
 const monthFmt = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
-const months = Array.from({ length: 6 }, (_, i) => {
-  const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
-  return monthFmt.format(date);
-});
+const months = Array.from({ length: 6 }, (_, i) => monthFmt.format(new Date(now.getFullYear(), now.getMonth() + i, 1)));
 const defaultMonth = now.getDate() >= 15 ? 1 : 0;
+
+const memberships = prices.filter((p) => p.formValue);
+const optionText = (p: (typeof prices)[number]) => {
+  const price = lang === 'en' ? `€${p.price}` : `${p.price} €`;
+  if (!p.monthly) return `${p.name[lang]} · ${price}`;
+  const week = lang === 'en' ? `${p.trainingsPerWeek}×/week` : `${p.trainingsPerWeek}×/Woche`;
+  return `${p.name[lang]} · ${week} · ${price}${d.pricing.perMonth.replace(' ', '')}`;
+};
+const usesBackend = Boolean(forms.trial || forms.membership || formEndpoint);
 ---
 
 <section class="section register" id="join" aria-labelledby="join-title">
@@ -30,6 +48,10 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
       <p class="eyebrow" data-reveal>{r.eyebrow}</p>
       <h2 class="h2" id="join-title" data-reveal style="--d:80ms">{r.title}</h2>
       <p class="lead" data-reveal style="--d:160ms">{r.lead}</p>
+
+      <ol class="register__steps" role="list" data-reveal style="--d:200ms">
+        {d.pricing.steps.items.map((s, i) => <li><span aria-hidden="true">{i + 1}</span>{s}</li>)}
+      </ol>
 
       <ul class="register__direct" role="list" data-reveal style="--d:240ms">
         <li>
@@ -51,9 +73,12 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
       class="form"
       data-form
       data-endpoint={formEndpoint}
+      data-gforms={JSON.stringify(forms)}
+      data-sessions={JSON.stringify(sessions)}
       data-email={club.email}
       data-locale={locale}
-      data-subject={r.mailSubject}
+      data-subject-trial={r.mailSubjectTrial}
+      data-subject-membership={r.mailSubjectMembership}
       data-intro={r.mailIntro}
       action={formEndpoint || `mailto:${club.email}`}
       method="post"
@@ -65,6 +90,20 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
       <div class="form__hp" aria-hidden="true">
         <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
       </div>
+
+      <fieldset class="field field--full">
+        <legend>{r.typeLabel}</legend>
+        <div class="segmented">
+          <label>
+            <input type="radio" name="type" value="trial" checked />
+            <span><Icon name="star" size={18} />{r.typeTrial}</span>
+          </label>
+          <label>
+            <input type="radio" name="type" value="membership" />
+            <span><Icon name="users" size={18} />{r.typeMembership}</span>
+          </label>
+        </div>
+      </fieldset>
 
       <div class="field field--full">
         <label for="f-name">{r.name}</label>
@@ -81,23 +120,29 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
         <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" />
       </div>
 
-      <div class="field">
-        <label for="f-membership">{r.membership}</label>
-        <select id="f-membership" name="membership" required>
-          {
-            memberships.map((m) => (
-              <option value={m.label[lang]} data-id={m.id}>
-                {m.short[lang]}
-              </option>
-            ))
-          }
-          <option value={r.membershipOther} data-id="other">{r.membershipOther}</option>
+      <div class="field field--full" data-for="trial">
+        <label for="f-date">{r.date}</label>
+        <select id="f-date" name="date" data-session-select>
+          {upcoming.map((u) => <option value={u.label} data-iso={u.iso}>{u.label}</option>)}
         </select>
       </div>
 
-      <div class="field">
+      <div class="field" data-for="membership">
+        <label for="f-membership">{r.membership}</label>
+        <select id="f-membership" name="membership">
+          {
+            memberships.map((m) => (
+              <option value={m.formValue} data-id={m.id} selected={m.id === 'basic'}>
+                {optionText(m)}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+
+      <div class="field" data-for="membership">
         <label for="f-month">{r.month}</label>
-        <select id="f-month" name="month" required data-month-select>
+        <select id="f-month" name="month" data-month-select>
           {months.map((m, i) => <option value={m} selected={i === defaultMonth}>{m}</option>)}
         </select>
       </div>
@@ -118,7 +163,7 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
 
       <div class="field field--full">
         <label for="f-message">{r.message} <span class="field__opt">({r.optional})</span></label>
-        <textarea id="f-message" name="message" rows="4" maxlength="2000" placeholder={r.messagePlaceholder}></textarea>
+        <textarea id="f-message" name="message" rows="3" maxlength="2000" placeholder={r.messagePlaceholder}></textarea>
       </div>
 
       <label class="consent field--full">
@@ -133,7 +178,7 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
           <span data-submit-label>{r.submit}</span>
           <Icon name="arrow" />
         </button>
-        <p class="form__note">{formEndpoint ? r.noteEndpoint : r.noteMailto}</p>
+        <p class="form__note">{usesBackend ? r.noteSent : r.noteMailto}</p>
       </div>
 
       <div class="form__status field--full" role="status" aria-live="polite">
@@ -166,7 +211,7 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
     bottom: -30%;
     width: min(1100px, 120vw);
     aspect-ratio: 1;
-    background: radial-gradient(closest-side, rgb(225 29 39 / 0.28), transparent 70%);
+    background: radial-gradient(closest-side, rgb(200 69 58 / 0.26), transparent 70%);
     pointer-events: none;
   }
 
@@ -182,6 +227,38 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
     top: calc(var(--header-h) + 2rem);
     display: grid;
     gap: var(--space-s);
+  }
+
+  .register__steps {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    list-style: none;
+  }
+
+  .register__steps li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+  }
+
+  .register__steps span {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    border: 1px solid var(--c-line-strong);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+  }
+
+  .register__steps li:last-child span {
+    border-color: var(--c-red);
+    background: var(--c-red);
+    color: #fff;
   }
 
   .register__direct {
@@ -215,7 +292,7 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
     height: 2.75rem;
     border: 1px solid var(--c-line-strong);
     border-radius: 50%;
-    color: var(--c-red);
+    color: var(--c-red-text);
     transition: border-color 0.2s;
   }
 
@@ -232,6 +309,12 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
     border-radius: var(--radius-l);
     background: var(--c-ink-3);
     box-shadow: 0 40px 100px -50px rgb(0 0 0 / 0.9);
+  }
+
+  /* Only the fields for the chosen request type are shown (pure CSS, works without JS) */
+  .form:has(input[name='type'][value='trial']:checked) [data-for='membership'],
+  .form:has(input[name='type'][value='membership']:checked) [data-for='trial'] {
+    display: none;
   }
 
   .form__hp {
@@ -287,7 +370,7 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
   }
 
   .field textarea {
-    min-height: 7rem;
+    min-height: 6rem;
     resize: vertical;
   }
 
@@ -317,12 +400,59 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
   .field textarea:focus-visible {
     outline: none;
     border-color: var(--c-red);
-    box-shadow: 0 0 0 4px rgb(225 29 39 / 0.25);
+    box-shadow: 0 0 0 4px rgb(200 69 58 / 0.3);
   }
 
   .field input:user-invalid,
   .field select:user-invalid {
     border-color: var(--c-hot);
+  }
+
+  .segmented {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 16px;
+    background: var(--c-ink-2);
+  }
+
+  .segmented label {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .segmented input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .segmented span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--c-text-dim);
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+
+  .segmented input:checked + span {
+    background: var(--c-red);
+    color: #fff;
+  }
+
+  .segmented input:focus-visible + span {
+    outline: 2px solid var(--c-hot);
+    outline-offset: 2px;
   }
 
   .chips {
@@ -433,8 +563,8 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
   }
 
   .form__msg--err {
-    border: 1px solid rgb(255 90 43 / 0.45);
-    background: rgb(255 90 43 / 0.1);
+    border: 1px solid rgb(232 115 79 / 0.45);
+    background: rgb(232 115 79 / 0.1);
   }
 
   .form__msg a {
@@ -454,6 +584,10 @@ const defaultMonth = now.getDate() >= 15 ? 1 : 0;
   @media (max-width: 560px) {
     .form {
       grid-template-columns: 1fr;
+    }
+
+    .segmented span {
+      font-size: 0.9375rem;
     }
   }
 </style>

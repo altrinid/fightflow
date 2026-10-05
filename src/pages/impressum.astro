@@ -16,19 +16,20 @@ import { club } from '../data/site';
   <h2>Medieninhaber &amp; Herausgeber</h2>
   <p>
     <strong>{club.legalName}</strong><br />
-    {club.address.street ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}<br />
-    {club.address.postalCode} {club.address.city}, Österreich
+    Vereinssitz: {club.seat ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}<br />
+    Trainingsort: {club.gym.street}, {club.gym.door.de}, {club.gym.postalCode} Wien, Österreich
   </p>
   <p>
     ZVR-Zahl: {club.zvr ?? <span class="todo">[ZVR-Zahl ergänzen]</span>}<br />
     Vereinsbehörde: Landespolizeidirektion Wien<br />
-    Vertretungsbefugtes Organ: {club.representative ?? <span class="todo">[Obmann/Obfrau ergänzen]</span>}
+    Vertretungsbefugtes Organ: Obmann {club.representative ?? <span class="todo">[Name ergänzen]</span>}
   </p>
 
   <h2>Kontakt</h2>
   <p>
     Telefon: <a href={club.phoneHref}>{club.phone}</a><br />
-    E-Mail: <a href={`mailto:${club.email}`}>{club.email}</a>
+    E-Mail: <a href={`mailto:${club.email}`}>{club.email}</a><br />
+    Instagram: <a href={club.instagram.url} rel="noopener">{club.instagram.handle}</a>
   </p>
 
   <h2>Grundlegende Richtung</h2>
@@ -53,7 +54,7 @@ import { club } from '../data/site';
   <h2>Urheberrecht</h2>
   <p>
     Die Inhalte dieser Website (Texte, Bilder, Grafiken) unterliegen dem Urheberrecht. Eine Verwendung ist nur mit
-    Zustimmung des Vereins zulässig. Verwendete Schriften: Anton und Inter (SIL Open Font License 1.1), lokal
-    eingebunden.
+    Zustimmung des Vereins zulässig. Fotos und Logo: FightFlow. Verwendete Schriften: Anton und Inter (SIL Open Font
+    License 1.1), lokal eingebunden.
   </p>
 </LegalPage>

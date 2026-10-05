@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import { photos } from '../data/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+// "Train hard. Stay disciplined. Keep moving." → one line per sentence
+const lines = d.community.slogan.split(/(?<=\.)\s+/);
+---
+
+<section class="community" aria-label={d.community.caption}>
+  <Image
+    src={photos.team.src}
+    alt={photos.team.alt[lang]}
+    widths={[640, 960, 1280, 1536]}
+    sizes="100vw"
+    quality={62}
+    loading="lazy"
+    decoding="async"
+    class="community__img"
+  />
+  <div class="container community__inner">
+    <p class="community__slogan display" lang="en">
+      {lines.map((l, i) => <span class:list={{ 'text-red': i === lines.length - 1 }}>{l}</span>)}
+    </p>
+    <p class="community__caption">{d.community.caption}</p>
+  </div>
+</section>
+
+<style>
+  .community {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: end;
+    min-height: clamp(26rem, 62vw, 44rem);
+    overflow: hidden;
+  }
+
+  .community :global(.community__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 24%;
+  }
+
+  .community::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, var(--c-ink) 0%, rgb(11 11 13 / 0.2) 22%, rgb(11 11 13 / 0.25) 45%, rgb(11 11 13 / 0.92) 85%, var(--c-ink) 100%),
+      linear-gradient(90deg, rgb(11 11 13 / 0.6), transparent 70%);
+  }
+
+  .community__inner {
+    padding-block: var(--space-l);
+  }
+
+  .community__slogan {
+    display: grid;
+    font-size: clamp(2.6rem, 1.4rem + 6vw, 7rem);
+    line-height: 0.92;
+  }
+
+  .community__slogan .text-red {
+    color: var(--c-red-text);
+  }
+
+  .community__caption {
+    margin-top: 1.25rem;
+    color: var(--c-text-dim);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+</style>

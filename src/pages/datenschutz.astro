@@ -1,6 +1,8 @@
 ---
 import LegalPage from '../components/LegalPage.astro';
-import { club, formEndpoint } from '../data/site';
+import { club, forms, formEndpoint } from '../data/site';
+
+const viaGoogleForms = Boolean(forms.trial || forms.membership);
 ---
 
 <LegalPage
@@ -20,16 +22,14 @@ import { club, formEndpoint } from '../data/site';
   <h2>Verantwortlicher</h2>
   <p>
     {club.legalName}<br />
-    {club.address.street ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}, {club.address.postalCode}
-    {club.address.city}<br />
+    {club.seat ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}<br />
     E-Mail: <a href={`mailto:${club.email}`}>{club.email}</a> · Telefon: <a href={club.phoneHref}>{club.phone}</a>
   </p>
 
   <h2>Keine Cookies, kein Tracking</h2>
   <p>
-    Diese Website setzt keine Cookies, verwendet keine Analyse- oder Tracking-Werkzeuge und lädt keine Inhalte von
-    Drittanbietern (auch Schriften werden lokal ausgeliefert). Beim Aufruf werden daher keine Daten an Dritte
-    übermittelt.
+    Diese Website setzt keine Cookies, verwendet keine Analyse- oder Tracking-Werkzeuge und lädt beim Aufruf keine
+    Inhalte von Drittanbietern (auch Schriften werden lokal ausgeliefert).
   </p>
 
   <h2>Hosting &amp; Server-Logfiles</h2>
@@ -47,20 +47,20 @@ import { club, formEndpoint } from '../data/site';
     House, Barrow Street, Dublin 4, Irland.
   </p>
 
-  <h2>Online-Anmeldung</h2>
+  <h2>Anmeldung zum Probetraining und zur Mitgliedschaft</h2>
   <p>
-    Über das Anmeldeformular verarbeiten wir Name, E-Mail-Adresse, optional Telefonnummer, gewählte Mitgliedschaft,
-    Startmonat sowie optional Angaben zu Erfahrung und eine Nachricht. Zweck ist die Bearbeitung deiner Anmeldung, die
-    Mitgliederverwaltung und die Abwicklung des Mitgliedsbeitrags. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO
-    (Vertragsanbahnung und -erfüllung) sowie deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit
-    widerrufen kannst.
+    Über das Anmeldeformular verarbeiten wir Name, E-Mail-Adresse, optional Telefonnummer, den gewünschten Termin bzw.
+    die gewählte Mitgliedschaft und den Startmonat sowie optional Angaben zu deiner Erfahrung und eine Nachricht. Zweck
+    ist die Organisation des Probetrainings, die Bearbeitung deiner Anmeldung, die Mitgliederverwaltung und die
+    Abwicklung des Mitgliedsbeitrags. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung und
+    -erfüllung) sowie deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit widerrufen kannst.
   </p>
   {
-    formEndpoint ? (
+    viaGoogleForms || formEndpoint ? (
       <p>
-        Die Anmeldedaten werden über Google Workspace (Google Apps Script und Google Tabellen) der Google Ireland Limited
-        verarbeitet und gespeichert. Eine Übermittlung in die USA kann nicht ausgeschlossen werden; Google LLC ist unter
-        dem EU-US Data Privacy Framework zertifiziert.
+        Die Angaben werden über Google Workspace ({viaGoogleForms ? 'Google Formulare und Google Tabellen' : 'Google Apps Script und Google Tabellen'}) der
+        Google Ireland Limited verarbeitet und gespeichert. Eine Übermittlung in die USA kann nicht ausgeschlossen werden;
+        Google LLC ist unter dem EU-US Data Privacy Framework zertifiziert.
       </p>
     ) : (
       <p>
@@ -69,6 +69,19 @@ import { club, formEndpoint } from '../data/site';
       </p>
     )
   }
+
+  <h2>Google Maps</h2>
+  <p>
+    Die Karte zu unserem Trainingsort wird erst geladen, wenn du auf „Karte laden“ klickst. Erst dann wird eine
+    Verbindung zu Google (Google Ireland Limited) hergestellt und es werden z. B. deine IP-Adresse und Geräteinformationen
+    übertragen. Rechtsgrundlage ist deine Einwilligung durch den Klick (Art. 6 Abs. 1 lit. a DSGVO).
+  </p>
+
+  <h2>Instagram</h2>
+  <p>
+    Wir verlinken auf unser Instagram-Profil. Es handelt sich um einen einfachen Link – Daten werden erst übertragen, wenn
+    du ihn anklickst. Für Instagram gelten die Datenschutzbestimmungen der Meta Platforms Ireland Limited.
+  </p>
 
   <h2>Speicherdauer</h2>
   <p>

@@ -1,5 +1,5 @@
 ---
-import Wordmark from './Wordmark.astro';
+import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { t, route, type Lang, type RouteKey } from '../i18n';
 
@@ -13,8 +13,8 @@ const d = t(lang);
 const home = route('home', lang);
 const other: Lang = lang === 'de' ? 'en' : 'de';
 const links = [
-  { href: `${home}#training`, label: d.nav.training },
   { href: `${home}#coach`, label: d.nav.coach },
+  { href: `${home}#training`, label: d.nav.training },
   { href: `${home}#pricing`, label: d.nav.pricing },
   { href: `${home}#faq`, label: d.nav.faq },
   { href: `${home}#contact`, label: d.nav.contact },
@@ -24,7 +24,7 @@ const links = [
 <header class="site-header" id="top" data-header>
   <div class="container site-header__bar">
     <a class="site-header__logo" href={home} aria-label={d.nav.home}>
-      <Wordmark title="" />
+      <Logo size={42} />
     </a>
 
     <nav class="site-nav" id="site-nav" aria-label={d.nav.label}>
@@ -45,11 +45,11 @@ const links = [
           <span aria-hidden="true">{other.toUpperCase()}</span>
           <span class="visually-hidden">{d.nav.switchTo}</span>
         </a>
-        <a class="btn btn--primary site-nav__cta" href={`${home}#join`} data-nav-link>{d.nav.register}</a>
+        <a class="btn btn--primary site-nav__cta" href={`${home}#join`} data-nav-link data-form-type="trial">{d.nav.register}</a>
       </div>
     </nav>
 
-    <a class="btn btn--primary header-cta" href={`${home}#join`}>{d.nav.registerShort}</a>
+    <a class="btn btn--primary header-cta" href={`${home}#join`} data-form-type="trial">{d.nav.registerShort}</a>
 
     <button
       class="menu-toggle"
@@ -105,13 +105,8 @@ const links = [
     position: relative;
     z-index: 2;
     display: block;
-    width: clamp(132px, 12vw, 158px);
     color: var(--c-text);
-  }
-
-  .site-header__logo :global(svg) {
-    width: 100%;
-    height: auto;
+    text-decoration: none;
   }
 
   .site-nav {
@@ -231,7 +226,14 @@ const links = [
     transform: translateY(-4px) rotate(-45deg);
   }
 
-  @media (max-width: 959px) {
+  @media (max-width: 479px) {
+    /* the medallion alone is enough next to the CTA on small phones */
+    .site-header__logo :global(.logo__word) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1079px) {
     .menu-toggle {
       display: block;
     }
@@ -264,7 +266,7 @@ const links = [
       gap: 2rem;
       padding: calc(var(--header-h) + 2rem) var(--gutter) max(2rem, env(safe-area-inset-bottom));
       background:
-        radial-gradient(120% 60% at 100% 0%, rgb(225 29 39 / 0.22), transparent 60%),
+        radial-gradient(120% 60% at 100% 0%, rgb(200 69 58 / 0.22), transparent 60%),
         var(--c-ink);
       opacity: 0;
       visibility: hidden;

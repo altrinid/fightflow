@@ -17,6 +17,14 @@ export default defineConfig({
     // The whole stylesheet is small – inlining it removes every render-blocking request.
     inlineStylesheets: 'always',
   },
+  // Old Google Sites URLs → the matching section of the new one-pager
+  redirects: {
+    '/home': '/',
+    '/about': '/#gym',
+    '/contact': '/#contact',
+    '/free-trial-training': '/#join',
+    '/membership-registration': '/#join',
+  },
   i18n: {
     defaultLocale: 'de',
     locales: ['de', 'en'],

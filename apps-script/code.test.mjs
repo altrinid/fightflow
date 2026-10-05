@@ -100,3 +100,36 @@ test('registration, payment and activation flow', () => {
   ctx.onSheetEdit(ev);
   assert.equal(mails.length, 1, 'not sent twice');
 });
+
+test('trial training booking', () => {
+  mails.length = 0;
+  const res = ctx.doPost({
+    parameter: { type: 'trial', name: 'Lena Probe', email: 'lena@example.com', date: 'Di., 6. Okt. · 18:00–19:30', consent: 'yes', lang: 'de' },
+  });
+  assert.deepEqual(res, { ok: true });
+  const trial = sheets['Probetraining'];
+  assert.ok(trial, 'trial sheet created');
+  assert.equal(trial._data[0][0], 'Zeitstempel');
+  assert.equal(trial._data[1][4], 'Di., 6. Okt. · 18:00–19:30');
+  assert.equal(mails.length, 2);
+  assert.equal(mails[0].to, 'lena@example.com');
+  assert.equal(mails[0].subject, 'FightFlow — Dein Gratis-Probetraining 🥊');
+  assert.match(mails[0].body, /WUNSCHTERMIN\nDi\., 6\. Okt\. · 18:00–19:30/);
+  assert.match(mails[0].body, /Haymerlegasse 27, Tür 17, 1160 Wien/);
+  assert.doesNotMatch(mails[0].body, /IBAN/);
+  assert.equal(mails[1].subject, 'Probetraining: Lena Probe (Di., 6. Okt. · 18:00–19:30)');
+  // a trial without date is rejected
+  assert.deepEqual(ctx.doPost({ parameter: { type: 'trial', name: 'Lena Probe', email: 'lena@example.com', consent: 'yes' } }), {
+    ok: false,
+    error: 'invalid',
+  });
+});
+
+test('full membership mail shows the 79€ plan', () => {
+  mails.length = 0;
+  ctx.doPost({
+    parameter: { name: 'Tom Full', email: 'tom@example.com', membership: 'Full (3 trainings per week) - 79€/month', month: 'November 2026', consent: 'yes', lang: 'en' },
+  });
+  assert.match(mails[0].body, /PRICE\n79€ \/ month/);
+  assert.match(mails[0].body, /IBAN: AT00 TEST/);
+});

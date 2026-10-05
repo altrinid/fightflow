@@ -4,12 +4,14 @@ import Hero from './Hero.astro';
 import Ticker from './Ticker.astro';
 import Why from './Why.astro';
 import Coach from './Coach.astro';
+import Gym from './Gym.astro';
 import Training from './Training.astro';
+import Community from './Community.astro';
 import Pricing from './Pricing.astro';
 import Register from './Register.astro';
 import Faq from './Faq.astro';
 import Contact from './Contact.astro';
-import { club, memberships } from '../data/site';
+import { club, prices, schedule } from '../data/site';
 import { t, url, route, type Lang } from '../i18n';
 
 interface Props {
@@ -21,6 +23,7 @@ const d = t(lang);
 const site = Astro.site ?? new URL('https://www.fightflow.at');
 const pageUrl = new URL(route('home', lang), site).href;
 const homeUrl = new URL(route('home', 'de'), site).href;
+const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const jsonLd = [
   {
@@ -37,30 +40,41 @@ const jsonLd = [
     email: club.email,
     telephone: club.phone,
     sport: club.sport[lang],
-    priceRange: lang === 'de' ? 'ab 49 € / Monat' : 'from €49 / month',
+    sameAs: [club.instagram.url],
+    priceRange: lang === 'de' ? '0–79 €' : '€0–79',
     address: {
       '@type': 'PostalAddress',
-      ...(club.address.street ? { streetAddress: club.address.street } : {}),
-      postalCode: club.address.postalCode,
-      addressLocality: club.address.city,
+      streetAddress: `${club.gym.street}/17`,
+      postalCode: club.gym.postalCode,
+      addressLocality: 'Wien',
       addressRegion: 'Wien',
-      addressCountry: club.address.country,
+      addressCountry: club.gym.country,
     },
-    areaServed: { '@type': 'City', name: 'Wien' },
+    geo: { '@type': 'GeoCoordinates', latitude: club.gym.geo.lat, longitude: club.gym.geo.lng },
+    hasMap: club.maps.open,
+    openingHoursSpecification: schedule.map((s) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: `https://schema.org/${dayNames[s.weekday]}`,
+      opens: s.start,
+      closes: s.end,
+    })),
     memberOf: { '@type': 'SportsOrganization', name: club.umbrella.name, url: club.umbrella.url },
-    makesOffer: memberships.map((m) => ({
+    makesOffer: prices.map((p) => ({
       '@type': 'Offer',
-      name: m.label[lang],
-      price: m.priceEur.toFixed(2),
+      name: p.name[lang],
+      price: p.price.toFixed(2),
       priceCurrency: 'EUR',
-      priceSpecification: {
-        '@type': 'UnitPriceSpecification',
-        price: m.priceEur,
-        priceCurrency: 'EUR',
-        unitCode: 'MON',
-        unitText: lang === 'de' ? 'Monat' : 'month',
-      },
-      url: `${pageUrl}#join`,
+      ...(p.monthly
+        ? {
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: p.price,
+              priceCurrency: 'EUR',
+              unitCode: 'MON',
+            },
+          }
+        : {}),
+      url: `${pageUrl}#pricing`,
     })),
   },
   {
@@ -89,7 +103,9 @@ const jsonLd = [
   <Ticker lang={lang} />
   <Why lang={lang} />
   <Coach lang={lang} />
+  <Gym lang={lang} />
   <Training lang={lang} />
+  <Community lang={lang} />
   <Pricing lang={lang} />
   <Register lang={lang} />
   <Faq lang={lang} />

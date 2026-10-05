@@ -1,0 +1,163 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { club, photos } from '../data/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const tiles = photos.gym;
+---
+
+<section class="section section--ink2 gym" id="gym" aria-labelledby="gym-title">
+  <div class="container">
+    <div class="gym__head">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>{d.gym.eyebrow}</p>
+        <h2 class="h2" id="gym-title" data-reveal style="--d:80ms">{d.gym.title}</h2>
+      </div>
+      <div class="gym__intro" data-reveal style="--d:160ms">
+        <p class="lead">{d.gym.text}</p>
+        <a class="gym__insta" href={club.instagram.url} rel="noopener">
+          <Icon name="instagram" size={18} />
+          {club.instagram.handle}
+        </a>
+      </div>
+    </div>
+
+    <div class="gym__scroller" data-scroller role="region" aria-label={d.gym.photosLabel}>
+    <ul class="gym__grid" role="list">
+      {
+        tiles.map((p, i) => (
+          <li class={`gym__tile gym__tile--${i + 1}`} data-reveal style={`--d:${i * 70}ms`}>
+            <Image
+              src={p.src}
+              alt={p.alt[lang]}
+              widths={[360, 540, 720, 960]}
+              sizes={i === 3 ? '(max-width: 700px) 80vw, 60vw' : '(max-width: 700px) 80vw, 36vw'}
+              quality={68}
+              loading="lazy"
+              decoding="async"
+              style={'position' in p && p.position ? `object-position:${p.position}` : undefined}
+            />
+          </li>
+        ))
+      }
+    </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gym__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-m) var(--space-l);
+    align-items: end;
+    margin-bottom: var(--space-l);
+  }
+
+  .gym__head .section-head {
+    margin: 0;
+  }
+
+  .gym__intro {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+
+  .gym__insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--c-text);
+    border-bottom: 2px solid var(--c-red);
+  }
+
+  .gym__insta :global(svg) {
+    color: var(--c-red-text);
+  }
+
+  .gym__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    grid-template-rows: repeat(2, clamp(180px, 21vw, 320px));
+    grid-template-areas:
+      'a b c'
+      'a d d';
+    gap: clamp(0.5rem, 1vw, 0.9rem);
+    list-style: none;
+  }
+
+  .gym__tile {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--c-ink-3);
+  }
+
+  .gym__tile--1 {
+    grid-area: a;
+  }
+  .gym__tile--2 {
+    grid-area: b;
+  }
+  .gym__tile--3 {
+    grid-area: c;
+  }
+  .gym__tile--4 {
+    grid-area: d;
+  }
+
+  .gym__tile :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .gym__tile:hover :global(img) {
+    transform: scale(1.04);
+  }
+
+  @media (max-width: 860px) {
+    .gym__head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Phones: a swipeable strip instead of the bento grid */
+  @media (max-width: 700px) {
+    .gym__scroller {
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .gym__scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .gym__grid {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .gym__tile {
+      flex: 0 0 78%;
+      aspect-ratio: 4 / 5;
+      scroll-snap-align: start;
+    }
+  }
+</style>

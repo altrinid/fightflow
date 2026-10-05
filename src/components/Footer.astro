@@ -1,5 +1,6 @@
 ---
 import Wordmark from './Wordmark.astro';
+import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { club } from '../data/site';
 import { t, route, type Lang, type RouteKey } from '../i18n';
@@ -15,8 +16,9 @@ const home = route('home', lang);
 const other: Lang = lang === 'de' ? 'en' : 'de';
 const year = new Date().getFullYear();
 const links = [
-  { href: `${home}#training`, label: d.nav.training },
   { href: `${home}#coach`, label: d.nav.coach },
+  { href: `${home}#gym`, label: d.nav.gym },
+  { href: `${home}#training`, label: d.nav.training },
   { href: `${home}#pricing`, label: d.nav.pricing },
   { href: `${home}#join`, label: d.nav.register },
   { href: `${home}#faq`, label: d.nav.faq },
@@ -27,7 +29,7 @@ const links = [
   <div class="container">
     <div class="site-footer__top">
       <div class="site-footer__brand">
-        <a class="site-footer__logo" href={home} aria-label={d.nav.home}><Wordmark title="" /></a>
+        <a class="site-footer__logo" href={home} aria-label={d.nav.home}><Logo size={52} /></a>
         <p>{d.footer.tagline}</p>
       </div>
 
@@ -43,7 +45,12 @@ const links = [
         <ul role="list">
           <li><a href={club.phoneHref}>{club.phone}</a></li>
           <li><a href={`mailto:${club.email}`}>{club.email}</a></li>
-          <li>{d.contact.locationValue}</li>
+          <li><a href={club.instagram.url} rel="noopener">Instagram {club.instagram.handle}</a></li>
+          <li>
+            <a href={club.maps.open} rel="noopener">
+              {club.gym.street}, {club.gym.door[lang]}<br />{club.gym.postalCode} {club.gym.city[lang]}
+            </a>
+          </li>
         </ul>
       </div>
 
@@ -90,9 +97,9 @@ const links = [
   }
 
   .site-footer__logo {
-    display: block;
-    width: 170px;
+    display: inline-block;
     margin-bottom: 1rem;
+    color: var(--c-text);
   }
 
   .site-footer__brand p {

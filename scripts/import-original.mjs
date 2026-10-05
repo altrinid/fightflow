@@ -10,6 +10,7 @@
  * No dependencies – Node 22+. Behind a proxy run with NODE_USE_ENV_PROXY=1.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 
 const START = new URL(process.argv[2] ?? 'https://www.fightflow.at/');
@@ -113,12 +114,15 @@ await mkdir(IMG_DIR, { recursive: true });
 const queue = [START.origin + START.pathname];
 const seen = new Set();
 const downloaded = new Map(); // image url → saved entry (same photo on several pages)
+const byHash = new Map(); // content hash → saved entry (Google serves one photo under many urls)
+let navTexts = null; // link texts of the site navigation, filtered out of every page
 const manifest = { source: START.href, importedAt: new Date().toISOString(), pages: [] };
 
 while (queue.length && seen.size < MAX_PAGES) {
   const url = queue.shift();
   if (seen.has(url)) continue;
   seen.add(url);
+  if (url !== START.origin + '/' && new URL(url).pathname === '/home' && seen.has(START.origin + '/')) continue;
 
   let html;
   try {
@@ -129,6 +133,13 @@ while (queue.length && seen.size < MAX_PAGES) {
   }
   const slug = slugFor(url);
   const page = extract(html, url);
+  if (!navTexts) {
+    // list items that occur more than once on the first page are the (repeated) navigation
+    const counts = new Map();
+    page.blocks.filter((b) => b.startsWith('- ')).forEach((b) => counts.set(b, (counts.get(b) ?? 0) + 1));
+    navTexts = new Set([...counts].filter(([, n]) => n > 1).map(([b]) => b.replace(/^- (More)?/, '- ')));
+  }
+  page.blocks = page.blocks.filter((b) => !navTexts.has(b.replace(/^- (More)?/, '- ')));
   page.links.forEach((l) => !seen.has(l) && queue.push(l));
 
   const saved = [];
@@ -140,10 +151,17 @@ while (queue.length && seen.size < MAX_PAGES) {
     try {
       const { buffer, type } = await get(img.url, 'buffer');
       if (buffer.length < 2048) continue; // icons, spacers
+      const hash = createHash('sha1').update(buffer).digest('hex');
+      if (byHash.has(hash)) {
+        downloaded.set(img.url, byHash.get(hash));
+        saved.push({ ...byHash.get(hash), alt: img.alt || byHash.get(hash).alt });
+        continue;
+      }
       const file = `${slug}-${String(i + 1).padStart(2, '0')}.${extFor(type, img.url)}`;
       await writeFile(path.join(IMG_DIR, file), buffer);
       const entry = { file: `src/assets/photos/original/${file}`, alt: img.alt, source: img.url, bytes: buffer.length };
       downloaded.set(img.url, entry);
+      byHash.set(hash, entry);
       saved.push(entry);
     } catch (err) {
       console.warn(`! image ${img.url}: ${err.message}`);

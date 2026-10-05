@@ -20,19 +20,20 @@ import { route } from '../../i18n';
   <h2>Media owner &amp; publisher</h2>
   <p>
     <strong>{club.legalName}</strong><br />
-    {club.address.street ?? <span class="todo">[club address]</span>}<br />
-    {club.address.postalCode} Vienna, Austria
+    Registered seat: {club.seat ?? <span class="todo">[club address]</span>}<br />
+    Training location: {club.gym.street}, {club.gym.door.en}, {club.gym.postalCode} Vienna, Austria
   </p>
   <p>
     Association register number (ZVR): {club.zvr ?? <span class="todo">[ZVR number]</span>}<br />
     Registering authority: Landespolizeidirektion Wien<br />
-    Authorised representative: {club.representative ?? <span class="todo">[chair of the board]</span>}
+    Authorised representative: chairman {club.representative ?? <span class="todo">[name]</span>}
   </p>
 
   <h2>Contact</h2>
   <p>
     Phone: <a href={club.phoneHref}>{club.phone}</a><br />
-    E-mail: <a href={`mailto:${club.email}`}>{club.email}</a>
+    E-mail: <a href={`mailto:${club.email}`}>{club.email}</a><br />
+    Instagram: <a href={club.instagram.url} rel="noopener">{club.instagram.handle}</a>
   </p>
 
   <h2>Purpose</h2>
@@ -50,6 +51,6 @@ import { route } from '../../i18n';
   <h2>Copyright</h2>
   <p>
     All content (texts, images, graphics) is protected by copyright and may only be used with the club’s permission.
-    Typefaces: Anton and Inter (SIL Open Font License 1.1), served locally.
+    Photos and logo: FightFlow. Typefaces: Anton and Inter (SIL Open Font License 1.1), served locally.
   </p>
 </LegalPage>

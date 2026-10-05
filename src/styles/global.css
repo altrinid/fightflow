@@ -5,21 +5,21 @@
 :root {
   color-scheme: dark;
 
-  /* Colour */
-  --c-ink: #0b0b0c;
-  --c-ink-2: #121214;
-  --c-ink-3: #1a1a1d;
-  --c-ink-4: #242428;
+  /* Colour – taken from the FightFlow logo (brick red, charcoal, off-white) */
+  --c-ink: #0b0b0d;
+  --c-ink-2: #121217;
+  --c-ink-3: #1d1d24;
+  --c-ink-4: #2f2f3a; /* logo charcoal */
   --c-bone: #f1ece4;
   --c-bone-2: #e6dfd4;
   --c-text: #f5f2ed;
   --c-text-dim: #aaa49c;
   --c-on-bone: #141312;
   --c-on-bone-dim: #5a554e;
-  --c-red: #e11d27;
-  --c-red-text: #ff3d47; /* red for small text on dark – 5.6:1 on --c-ink */
-  --c-red-600: #c4141d;
-  --c-hot: #ff5a2b;
+  --c-red: #c8453a; /* logo red – white text 4.8:1 */
+  --c-red-text: #e46a58; /* red for small text on dark – 6.1:1 on --c-ink */
+  --c-red-600: #b23a30;
+  --c-hot: #e8734f;
   --c-line: rgb(255 255 255 / 0.1);
   --c-line-strong: rgb(255 255 255 / 0.22);
   --c-line-bone: rgb(20 19 18 / 0.14);
@@ -345,6 +345,12 @@ body::after {
   transform: none;
 }
 
+/* Horizontal photo strips are keyboard-scrollable when they overflow */
+[data-scroller]:focus-visible {
+  outline-offset: 4px;
+  border-radius: var(--radius);
+}
+
 /* Scroll reveal (only when JS is available) ------------------------------ */
 .js [data-reveal] {
   opacity: 0;
@@ -408,7 +414,7 @@ body::after {
 .todo {
   padding: 0.05em 0.35em;
   border-radius: 4px;
-  background: rgb(255 90 43 / 0.16);
+  background: rgb(232 115 79 / 0.16);
   color: var(--c-hot);
   font-weight: 600;
 }
