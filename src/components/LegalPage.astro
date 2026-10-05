@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import { type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  routeKey: RouteKey;
+  title: string;
+  heading: string;
+  description: string;
+  eyebrow: string;
+}
+
+const { lang, routeKey, title, heading, description, eyebrow } = Astro.props;
+---
+
+<Base lang={lang} title={title} description={description} routeKey={routeKey}>
+  <section class="section legal">
+    <div class="container">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="h2 legal__title">{heading}</h1>
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    padding-top: calc(var(--header-h) + var(--space-l));
+  }
+
+  .legal__title {
+    margin: 0.75rem 0 var(--space-m);
+  }
+</style>

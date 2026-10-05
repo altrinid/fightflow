@@ -1,0 +1,171 @@
+---
+import Icon from './Icon.astro';
+import Accent from './Accent.astro';
+import { club } from '../data/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const c = d.contact;
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact__grid">
+      <div class="section-head contact__head">
+        <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+        <h2 class="h2" id="contact-title" data-reveal style="--d:80ms"><Accent text={c.title} /></h2>
+        <p class="lead" data-reveal style="--d:160ms">{c.lead}</p>
+      </div>
+
+      <ul class="contact__cards" role="list">
+        <li data-reveal>
+          <a class="contact__card" href={club.phoneHref}>
+            <span class="contact__icon"><Icon name="phone" /></span>
+            <span class="contact__k">{c.phone}</span>
+            <span class="contact__v">{club.phone}</span>
+            <Icon name="arrow" class="contact__go" />
+          </a>
+        </li>
+        <li data-reveal style="--d:80ms">
+          <a class="contact__card" href={`mailto:${club.email}`}>
+            <span class="contact__icon"><Icon name="mail" /></span>
+            <span class="contact__k">{c.email}</span>
+            <span class="contact__v">{club.email}</span>
+            <Icon name="arrow" class="contact__go" />
+          </a>
+        </li>
+        <li data-reveal style="--d:160ms">
+          <div class="contact__card">
+            <span class="contact__icon"><Icon name="pin" /></span>
+            <span class="contact__k">{c.location}</span>
+            <span class="contact__v">{c.locationValue}</span>
+          </div>
+        </li>
+        <li data-reveal style="--d:240ms">
+          <div class="contact__card">
+            <span class="contact__icon"><Icon name="home" /></span>
+            <span class="contact__k">{c.club}</span>
+            <span class="contact__v contact__v--small">{club.legalName}</span>
+            <span class="contact__note">{c.clubNote}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .contact {
+    overflow: hidden;
+  }
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .contact__head {
+    margin: 0;
+  }
+
+  .contact__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1rem);
+    list-style: none;
+  }
+
+  .contact__card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    height: 100%;
+    padding: clamp(1.25rem, 2.5vw, 1.75rem);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-l);
+    background: var(--c-ink-2);
+    text-decoration: none;
+    transition:
+      border-color 0.3s,
+      transform 0.4s var(--ease-out),
+      background-color 0.3s;
+  }
+
+  a.contact__card:hover {
+    border-color: rgb(225 29 39 / 0.6);
+    background: var(--c-ink-3);
+    transform: translateY(-3px);
+  }
+
+  .contact__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    background: rgb(225 29 39 / 0.14);
+    color: var(--c-red);
+  }
+
+  .contact__k {
+    color: var(--c-text-dim);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .contact__v {
+    font-size: var(--step-1);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__v--small {
+    font-size: 1rem;
+  }
+
+  .contact__note {
+    color: var(--c-text-dim);
+    font-size: 0.875rem;
+  }
+
+  .contact__card :global(.contact__go) {
+    position: absolute;
+    top: clamp(1.25rem, 2.5vw, 1.75rem);
+    right: clamp(1.25rem, 2.5vw, 1.75rem);
+    color: var(--c-text-dim);
+    transition:
+      transform 0.3s var(--ease-out),
+      color 0.3s;
+  }
+
+  a.contact__card:hover :global(.contact__go) {
+    color: var(--c-red);
+    transform: translateX(4px);
+  }
+
+
+  @media (max-width: 960px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .contact__cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

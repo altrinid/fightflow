@@ -1,0 +1,325 @@
+---
+import Wordmark from './Wordmark.astro';
+import Icon from './Icon.astro';
+import { t, route, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  routeKey: RouteKey;
+}
+
+const { lang, routeKey } = Astro.props;
+const d = t(lang);
+const home = route('home', lang);
+const other: Lang = lang === 'de' ? 'en' : 'de';
+const links = [
+  { href: `${home}#training`, label: d.nav.training },
+  { href: `${home}#coach`, label: d.nav.coach },
+  { href: `${home}#pricing`, label: d.nav.pricing },
+  { href: `${home}#faq`, label: d.nav.faq },
+  { href: `${home}#contact`, label: d.nav.contact },
+];
+---
+
+<header class="site-header" id="top" data-header>
+  <div class="container site-header__bar">
+    <a class="site-header__logo" href={home} aria-label={d.nav.home}>
+      <Wordmark title="" />
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label={d.nav.label}>
+      <ul class="site-nav__list" role="list">
+        {
+          links.map((l, i) => (
+            <li style={`--n:${i}`}>
+              <a class="site-nav__link" href={l.href} data-nav-link>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="site-nav__extra">
+        <a class="lang-switch" href={route(routeKey, other)} hreflang={other} lang={other} title={d.nav.switchTo}>
+          <Icon name="globe" size={16} />
+          <span aria-hidden="true">{other.toUpperCase()}</span>
+          <span class="visually-hidden">{d.nav.switchTo}</span>
+        </a>
+        <a class="btn btn--primary site-nav__cta" href={`${home}#join`} data-nav-link>{d.nav.register}</a>
+      </div>
+    </nav>
+
+    <a class="btn btn--primary header-cta" href={`${home}#join`}>{d.nav.registerShort}</a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-toggle
+      data-label-open={d.nav.menu}
+      data-label-close={d.nav.close}
+    >
+      <span class="visually-hidden" data-menu-label>{d.nav.menu}</span>
+      <span class="menu-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--header-h);
+  }
+
+  /* Background lives on a pseudo element: a backdrop-filter on the header itself
+     would trap the fixed mobile menu inside the header box. */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(11 11 12 / 0.88);
+    border-bottom: 1px solid var(--c-line);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .site-header[data-scrolled]::before {
+    opacity: 1;
+  }
+
+  .site-header__bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .site-header__logo {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: clamp(132px, 12vw, 158px);
+    color: var(--c-text);
+  }
+
+  .site-header__logo :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+  }
+
+  .site-nav__list {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+    list-style: none;
+  }
+
+  .site-nav__link {
+    position: relative;
+    padding-block: 0.4rem;
+    color: var(--c-text-dim);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .site-nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--c-red);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .site-nav__link:hover {
+    color: var(--c-text);
+  }
+
+  .site-nav__link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .site-nav__extra {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .lang-switch:hover {
+    border-color: var(--c-text);
+  }
+
+  .site-nav__cta {
+    min-height: 2.75rem;
+    padding: 0.55em 1.25em;
+    font-size: 0.9375rem;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .menu-toggle {
+    position: relative;
+    z-index: 2;
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .menu-toggle__bars {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: 6px;
+  }
+
+  .menu-toggle__bars span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--c-text);
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .site-header[data-open] .menu-toggle__bars span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .site-header[data-open] .menu-toggle__bars span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  @media (max-width: 959px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    .header-cta {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      min-height: 2.75rem;
+      margin-left: auto;
+      padding: 0.5em 1.1em;
+      font-size: 0.875rem;
+      transition:
+        opacity 0.25s,
+        transform 0.25s var(--ease-out);
+    }
+
+    .site-header[data-open] .header-cta {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .site-nav {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: calc(var(--header-h) + 2rem) var(--gutter) max(2rem, env(safe-area-inset-bottom));
+      background:
+        radial-gradient(120% 60% at 100% 0%, rgb(225 29 39 / 0.22), transparent 60%),
+        var(--c-ink);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.35s var(--ease-out),
+        visibility 0.35s;
+    }
+
+    .site-header[data-open] .site-nav {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .site-nav__list {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .site-nav__list li {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.5s var(--ease-out),
+        transform 0.5s var(--ease-out);
+      transition-delay: calc(var(--n) * 50ms + 80ms);
+    }
+
+    .site-header[data-open] .site-nav__list li {
+      opacity: 1;
+      transform: none;
+    }
+
+    .site-nav__link {
+      display: block;
+      padding-block: 0.35rem;
+      color: var(--c-text);
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 11vw, 4rem);
+      font-weight: 400;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .site-nav__link::after {
+      display: none;
+    }
+
+    .site-nav__extra {
+      justify-content: space-between;
+    }
+
+    .site-nav__cta {
+      flex: 1;
+      min-height: 3.25rem;
+      font-size: 1rem;
+    }
+  }
+</style>

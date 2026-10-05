@@ -1,0 +1,59 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import { club } from '../data/site';
+---
+
+<LegalPage
+  lang="de"
+  routeKey="imprint"
+  title="Impressum | FightFlow"
+  heading="Impressum"
+  eyebrow="Rechtliches"
+  description="Impressum und Offenlegung des Kampfsportvereins FightFlow Wien – ASKÖ."
+>
+  <p>Informationen gemäß § 5 E-Commerce-Gesetz (ECG) und Offenlegung gemäß § 25 Mediengesetz.</p>
+
+  <h2>Medieninhaber &amp; Herausgeber</h2>
+  <p>
+    <strong>{club.legalName}</strong><br />
+    {club.address.street ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}<br />
+    {club.address.postalCode} {club.address.city}, Österreich
+  </p>
+  <p>
+    ZVR-Zahl: {club.zvr ?? <span class="todo">[ZVR-Zahl ergänzen]</span>}<br />
+    Vereinsbehörde: Landespolizeidirektion Wien<br />
+    Vertretungsbefugtes Organ: {club.representative ?? <span class="todo">[Obmann/Obfrau ergänzen]</span>}
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>
+    Telefon: <a href={club.phoneHref}>{club.phone}</a><br />
+    E-Mail: <a href={`mailto:${club.email}`}>{club.email}</a>
+  </p>
+
+  <h2>Grundlegende Richtung</h2>
+  <p>
+    Gemeinnütziger Verein zur Förderung des Kampfsports, insbesondere des Kickboxens. Die Website informiert über das
+    Trainingsangebot und die Mitgliedschaft im Verein. Der Verein ist Mitglied der {club.umbrella.name}.
+  </p>
+
+  <h2>Haftung für Inhalte</h2>
+  <p>
+    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität
+    der Inhalte übernehmen wir jedoch keine Gewähr.
+  </p>
+
+  <h2>Haftung für Links</h2>
+  <p>
+    Diese Website enthält Links zu externen Websites, auf deren Inhalte wir keinen Einfluss haben. Für diese Inhalte ist
+    stets der jeweilige Anbieter oder Betreiber verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden
+    derartige Links umgehend entfernt.
+  </p>
+
+  <h2>Urheberrecht</h2>
+  <p>
+    Die Inhalte dieser Website (Texte, Bilder, Grafiken) unterliegen dem Urheberrecht. Eine Verwendung ist nur mit
+    Zustimmung des Vereins zulässig. Verwendete Schriften: Anton und Inter (SIL Open Font License 1.1), lokal
+    eingebunden.
+  </p>
+</LegalPage>

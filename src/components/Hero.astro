@@ -1,0 +1,253 @@
+---
+import { Picture } from 'astro:assets';
+import FlowLines from './FlowLines.astro';
+import HeroMark from './HeroMark.astro';
+import Icon from './Icon.astro';
+import { photos } from '../data/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const hero = photos.hero;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  {
+    hero && (
+      <div class="hero__bg" aria-hidden="true">
+        <Picture
+          src={hero.src}
+          alt=""
+          formats={['avif', 'webp']}
+          widths={[640, 960, 1280, 1920]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="hero__img"
+        />
+      </div>
+    )
+  }
+  <div class="hero__glow" aria-hidden="true"></div>
+  <FlowLines id="hero" class="hero__flow" animate />
+
+  <div class="container hero__inner">
+    <p class="eyebrow hero__eyebrow">
+      <span class="hero__dot" aria-hidden="true"></span>
+      {d.hero.eyebrow}
+    </p>
+
+    <HeroMark />
+
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <h1 class="hero__title" id="hero-title">{d.hero.h1}</h1>
+        <p class="hero__lead">{d.hero.lead}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="#join">{d.hero.ctaPrimary}<Icon name="arrow" /></a>
+          <a class="btn btn--ghost" href="#training">{d.hero.ctaSecondary}</a>
+        </div>
+      </div>
+
+      <dl class="hero__facts">
+        {
+          d.hero.facts.map((f, i) => (
+            <div class="hero__fact" style={`--d:${i * 70 + 500}ms`}>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-top: calc(var(--header-h) + clamp(2rem, 5vw, 4.5rem));
+    padding-bottom: var(--space-l);
+    overflow: hidden;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+  }
+
+  .hero__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.15) brightness(0.55);
+  }
+
+  .hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(11 11 12 / 0.55) 0%, rgb(11 11 12 / 0.75) 55%, var(--c-ink) 100%);
+  }
+
+  .hero__glow {
+    position: absolute;
+    z-index: -2;
+    inset: -20% -10% auto auto;
+    width: min(900px, 90vw);
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgb(225 29 39 / 0.32), rgb(225 29 39 / 0.08) 55%, transparent 75%);
+    pointer-events: none;
+  }
+
+  .hero :global(.hero__flow) {
+    position: absolute;
+    z-index: -1;
+    inset: 4% -5% auto;
+    width: 110%;
+    height: 78%;
+    opacity: 0.9;
+  }
+
+  .hero__eyebrow {
+    color: var(--c-text);
+    gap: 0.7em;
+  }
+
+  .hero__eyebrow::before {
+    display: none;
+  }
+
+  .hero__dot {
+    position: relative;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--c-red);
+  }
+
+  .hero__dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--c-red);
+    animation: ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes ping {
+    75%,
+    100% {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: var(--space-l);
+    align-items: end;
+  }
+
+  .hero__title {
+    max-width: 24ch;
+    font-family: var(--font-body);
+    font-size: clamp(1.45rem, 1.05rem + 1.6vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .hero__lead {
+    max-width: 52ch;
+    margin-top: 1.1rem;
+    color: var(--c-text-dim);
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .hero__facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border-top: 1px solid var(--c-line);
+    border-left: 1px solid var(--c-line);
+  }
+
+  .hero__fact {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border-right: 1px solid var(--c-line);
+    border-bottom: 1px solid var(--c-line);
+    background: rgb(11 11 12 / 0.6);
+    animation: fade-up 0.9s var(--ease-out) both;
+    animation-delay: var(--d);
+  }
+
+  .hero__fact dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  .hero__fact:first-child dd {
+    color: var(--c-red);
+  }
+
+  .hero__fact dt {
+    color: var(--c-text-dim);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* Keep the ribbon behind the wordmark, away from the body copy */
+    .hero :global(.hero__flow) {
+      inset: 17% -10% auto;
+      width: 120%;
+      height: 30%;
+      opacity: 0.75;
+    }
+
+    .hero__eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+    }
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Ticker from './Ticker.astro';
+import Why from './Why.astro';
+import Coach from './Coach.astro';
+import Training from './Training.astro';
+import Pricing from './Pricing.astro';
+import Register from './Register.astro';
+import Faq from './Faq.astro';
+import Contact from './Contact.astro';
+import { club, memberships } from '../data/site';
+import { t, url, route, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const site = Astro.site ?? new URL('https://www.fightflow.at');
+const pageUrl = new URL(route('home', lang), site).href;
+const homeUrl = new URL(route('home', 'de'), site).href;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SportsClub',
+    '@id': `${homeUrl}#club`,
+    name: club.name,
+    legalName: club.legalName,
+    alternateName: 'Kampfsportverein FightFlow Wien',
+    description: d.meta.description,
+    url: pageUrl,
+    image: new URL(url('og-image.jpg'), site).href,
+    logo: new URL(url('icon-512.png'), site).href,
+    email: club.email,
+    telephone: club.phone,
+    sport: club.sport[lang],
+    priceRange: lang === 'de' ? 'ab 49 € / Monat' : 'from €49 / month',
+    address: {
+      '@type': 'PostalAddress',
+      ...(club.address.street ? { streetAddress: club.address.street } : {}),
+      postalCode: club.address.postalCode,
+      addressLocality: club.address.city,
+      addressRegion: 'Wien',
+      addressCountry: club.address.country,
+    },
+    areaServed: { '@type': 'City', name: 'Wien' },
+    memberOf: { '@type': 'SportsOrganization', name: club.umbrella.name, url: club.umbrella.url },
+    makesOffer: memberships.map((m) => ({
+      '@type': 'Offer',
+      name: m.label[lang],
+      price: m.priceEur.toFixed(2),
+      priceCurrency: 'EUR',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: m.priceEur,
+        priceCurrency: 'EUR',
+        unitCode: 'MON',
+        unitText: lang === 'de' ? 'Monat' : 'month',
+      },
+      url: `${pageUrl}#join`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${homeUrl}#website`,
+    name: 'FightFlow',
+    url: homeUrl,
+    inLanguage: lang === 'de' ? 'de-AT' : 'en',
+    publisher: { '@id': `${homeUrl}#club` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: d.faq.items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<Base lang={lang} title={d.meta.title} description={d.meta.description} routeKey="home" jsonLd={jsonLd}>
+  <Hero lang={lang} />
+  <Ticker lang={lang} />
+  <Why lang={lang} />
+  <Coach lang={lang} />
+  <Training lang={lang} />
+  <Pricing lang={lang} />
+  <Register lang={lang} />
+  <Faq lang={lang} />
+  <Contact lang={lang} />
+</Base>

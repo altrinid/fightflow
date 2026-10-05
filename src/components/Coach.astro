@@ -1,0 +1,237 @@
+---
+import { Picture } from 'astro:assets';
+import FlowLines from './FlowLines.astro';
+import Monogram from './Monogram.astro';
+import Icon from './Icon.astro';
+import { coach } from '../data/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+---
+
+<section class="section coach" id="coach" aria-labelledby="coach-title">
+  <div class="container coach__grid">
+    <figure class="coach__visual" data-reveal>
+      {
+        coach.photo ? (
+          <Picture
+            src={coach.photo.src}
+            alt={coach.photo.alt[lang]}
+            formats={['avif', 'webp']}
+            widths={[400, 640, 900]}
+            sizes="(max-width: 860px) 100vw, 40vw"
+            class="coach__photo"
+          />
+        ) : (
+          <div class="coach__art" aria-hidden="true">
+            <FlowLines id="coach" lines={9} class="coach__flow" />
+            <Monogram class="coach__mono" />
+            <span class="coach__ghost display">{d.coach.ghost}</span>
+          </div>
+        )
+      }
+      <figcaption class="coach__caption">
+        <span class="coach__role">{d.coach.role}</span>
+        {coach.name && <span class="coach__name">{coach.name}</span>}
+      </figcaption>
+    </figure>
+
+    <div class="coach__copy">
+      <p class="eyebrow" data-reveal>{d.coach.eyebrow}</p>
+      <h2 class="h2" id="coach-title" data-reveal style="--d:80ms">{d.coach.title}</h2>
+      <p class="lead" data-reveal style="--d:160ms">{d.coach.text}</p>
+
+      <ul class="coach__badges" role="list" data-reveal style="--d:240ms">
+        {
+          d.coach.badges.map((b) => (
+            <li>
+              <Icon name="check" size={18} />
+              {b}
+            </li>
+          ))
+        }
+      </ul>
+
+      {
+        coach.achievements.length > 0 && (
+          <div class="coach__achievements" data-reveal style="--d:300ms">
+            <h3 class="coach__achievements-title">{d.coach.achievements}</h3>
+            <ul role="list">
+              {coach.achievements.map((a) => (
+                <li>{a[lang]}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <a class="btn btn--primary coach__cta" href="#join" data-reveal style="--d:320ms">
+        {d.hero.ctaPrimary}<Icon name="arrow" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .coach {
+    overflow: hidden;
+  }
+
+  .coach__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  .coach__visual {
+    position: relative;
+    margin: 0;
+  }
+
+  .coach__art,
+  .coach__visual :global(.coach__photo img) {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+  }
+
+  .coach__visual :global(.coach__photo img) {
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.1);
+  }
+
+  .coach__art {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--c-line);
+    background:
+      radial-gradient(90% 60% at 50% 110%, rgb(225 29 39 / 0.45), transparent 70%),
+      linear-gradient(160deg, var(--c-ink-3), var(--c-ink-2) 60%);
+  }
+
+  .coach__art :global(.coach__flow) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.55;
+  }
+
+  .coach__art :global(.coach__mono) {
+    position: relative;
+    width: 46%;
+    fill: none;
+    stroke: var(--c-text);
+    stroke-width: 0.6;
+    opacity: 0.9;
+  }
+
+  .coach__ghost {
+    position: absolute;
+    left: 1.1rem;
+    bottom: 1.1rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--c-line-strong);
+  }
+
+  .coach__caption {
+    position: absolute;
+    right: -0.75rem;
+    bottom: 1.5rem;
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius);
+    background: var(--c-red);
+    color: #fff;
+    box-shadow: 0 18px 40px -18px rgb(225 29 39 / 0.8);
+  }
+
+  .coach__role {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .coach__name {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .coach__copy {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+  }
+
+  .coach__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    list-style: none;
+  }
+
+  .coach__badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .coach__badges :global(svg) {
+    color: var(--c-red);
+  }
+
+  .coach__achievements-title {
+    margin-bottom: 0.5rem;
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-text-dim);
+  }
+
+  .coach__achievements ul {
+    display: grid;
+    gap: 0.4rem;
+    padding-left: 1.1em;
+  }
+
+  .coach__cta {
+    margin-top: 0.75rem;
+  }
+
+  @media (max-width: 860px) {
+    .coach__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .coach__visual {
+      max-width: 30rem;
+    }
+
+    .coach__caption {
+      right: 1rem;
+    }
+  }
+</style>

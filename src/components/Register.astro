@@ -1,0 +1,459 @@
+---
+import Icon from './Icon.astro';
+import { club, memberships, formEndpoint } from '../data/site';
+import { t, route, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const r = d.register;
+const locale = lang === 'de' ? 'de-AT' : 'en-GB';
+
+// Start months: this month + the next five. The client script refreshes the
+// list on load, so a page built months ago never offers months in the past.
+const now = new Date();
+const monthFmt = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
+const months = Array.from({ length: 6 }, (_, i) => {
+  const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+  return monthFmt.format(date);
+});
+const defaultMonth = now.getDate() >= 15 ? 1 : 0;
+---
+
+<section class="section register" id="join" aria-labelledby="join-title">
+  <div class="register__glow" aria-hidden="true"></div>
+  <div class="container register__grid">
+    <div class="register__intro">
+      <p class="eyebrow" data-reveal>{r.eyebrow}</p>
+      <h2 class="h2" id="join-title" data-reveal style="--d:80ms">{r.title}</h2>
+      <p class="lead" data-reveal style="--d:160ms">{r.lead}</p>
+
+      <ul class="register__direct" role="list" data-reveal style="--d:240ms">
+        <li>
+          <a href={club.phoneHref}>
+            <span class="register__direct-icon"><Icon name="phone" size={18} /></span>
+            <span><small>{d.contact.phone}</small>{club.phone}</span>
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${club.email}`}>
+            <span class="register__direct-icon"><Icon name="mail" size={18} /></span>
+            <span><small>{d.contact.email}</small>{club.email}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <form
+      class="form"
+      data-form
+      data-endpoint={formEndpoint}
+      data-email={club.email}
+      data-locale={locale}
+      data-subject={r.mailSubject}
+      data-intro={r.mailIntro}
+      action={formEndpoint || `mailto:${club.email}`}
+      method="post"
+      enctype={formEndpoint ? 'application/x-www-form-urlencoded' : 'text/plain'}
+      data-reveal
+      style="--d:120ms"
+    >
+      <input type="hidden" name="lang" value={lang} />
+      <div class="form__hp" aria-hidden="true">
+        <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <div class="field field--full">
+        <label for="f-name">{r.name}</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required minlength="3" maxlength="120" />
+      </div>
+
+      <div class="field">
+        <label for="f-email">{r.email}</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="160" />
+      </div>
+
+      <div class="field">
+        <label for="f-phone">{r.phone} <span class="field__opt">({r.optional})</span></label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" />
+      </div>
+
+      <div class="field">
+        <label for="f-membership">{r.membership}</label>
+        <select id="f-membership" name="membership" required>
+          {
+            memberships.map((m) => (
+              <option value={m.label[lang]} data-id={m.id}>
+                {m.short[lang]}
+              </option>
+            ))
+          }
+          <option value={r.membershipOther} data-id="other">{r.membershipOther}</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-month">{r.month}</label>
+        <select id="f-month" name="month" required data-month-select>
+          {months.map((m, i) => <option value={m} selected={i === defaultMonth}>{m}</option>)}
+        </select>
+      </div>
+
+      <fieldset class="field field--full">
+        <legend>{r.experience} <span class="field__opt">({r.optional})</span></legend>
+        <div class="chips">
+          {
+            r.experienceOptions.map((o) => (
+              <label class="chip">
+                <input type="radio" name="experience" value={o} />
+                <span>{o}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="field field--full">
+        <label for="f-message">{r.message} <span class="field__opt">({r.optional})</span></label>
+        <textarea id="f-message" name="message" rows="4" maxlength="2000" placeholder={r.messagePlaceholder}></textarea>
+      </div>
+
+      <label class="consent field--full">
+        <input type="checkbox" name="consent" value="yes" required />
+        <span>
+          {r.consentBefore}<a href={route('privacy', lang)}>{r.consentLink}</a>{r.consentAfter}
+        </span>
+      </label>
+
+      <div class="form__footer field--full">
+        <button class="btn btn--primary" type="submit" data-submit data-sending={r.sending}>
+          <span data-submit-label>{r.submit}</span>
+          <Icon name="arrow" />
+        </button>
+        <p class="form__note">{formEndpoint ? r.noteEndpoint : r.noteMailto}</p>
+      </div>
+
+      <div class="form__status field--full" role="status" aria-live="polite">
+        <div class="form__msg form__msg--ok" data-msg="success" hidden>
+          <strong>{r.successTitle}</strong>
+          <p>{r.successText}</p>
+        </div>
+        <div class="form__msg form__msg--ok" data-msg="mailto" hidden>
+          <strong>{r.mailtoTitle}</strong>
+          <p>{r.mailtoText}</p>
+        </div>
+        <div class="form__msg form__msg--err" data-msg="error" hidden>
+          <p>{r.error} <a href={`mailto:${club.email}`}>{club.email}</a>.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .register {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .register__glow {
+    position: absolute;
+    z-index: -1;
+    left: -20%;
+    bottom: -30%;
+    width: min(1100px, 120vw);
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgb(225 29 39 / 0.28), transparent 70%);
+    pointer-events: none;
+  }
+
+  .register__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .register__intro {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .register__direct {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    list-style: none;
+  }
+
+  .register__direct a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .register__direct small {
+    display: block;
+    color: var(--c-text-dim);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .register__direct-icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 50%;
+    color: var(--c-red);
+    transition: border-color 0.2s;
+  }
+
+  .register__direct a:hover .register__direct-icon {
+    border-color: var(--c-red);
+  }
+
+  .form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-l);
+    background: var(--c-ink-3);
+    box-shadow: 0 40px 100px -50px rgb(0 0 0 / 0.9);
+  }
+
+  .form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  .field label,
+  .field legend {
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 650;
+  }
+
+  .field legend {
+    margin-bottom: 0.45rem;
+  }
+
+  .field__opt {
+    color: var(--c-text-dim);
+    font-weight: 500;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 12px;
+    background: var(--c-ink-2);
+    font-size: 1rem;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .field textarea {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  .field select {
+    padding-right: 2.75rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5f2ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: rgb(170 164 156 / 0.7);
+  }
+
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: rgb(255 255 255 / 0.4);
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--c-red);
+    box-shadow: 0 0 0 4px rgb(225 29 39 / 0.25);
+  }
+
+  .field input:user-invalid,
+  .field select:user-invalid {
+    border-color: var(--c-hot);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+
+  .chip:hover span {
+    border-color: rgb(255 255 255 / 0.45);
+  }
+
+  .chip input:checked + span {
+    border-color: var(--c-red);
+    background: var(--c-red);
+    color: #fff;
+  }
+
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--c-hot);
+    outline-offset: 3px;
+  }
+
+  .consent {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    color: var(--c-text-dim);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .consent input {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0.1rem 0 0;
+    accent-color: var(--c-red);
+    cursor: pointer;
+  }
+
+  .consent a {
+    color: var(--c-text);
+    text-underline-offset: 3px;
+  }
+
+  .form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .form__footer .btn[disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .form__note {
+    flex: 1 1 16rem;
+    color: var(--c-text-dim);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .form__msg {
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+  }
+
+  .form__msg strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: var(--step-1);
+  }
+
+  .form__msg--ok {
+    border: 1px solid rgb(74 222 128 / 0.35);
+    background: rgb(74 222 128 / 0.08);
+  }
+
+  .form__msg--err {
+    border: 1px solid rgb(255 90 43 / 0.45);
+    background: rgb(255 90 43 / 0.1);
+  }
+
+  .form__msg a {
+    color: var(--c-text);
+  }
+
+  @media (max-width: 960px) {
+    .register__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .register__intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

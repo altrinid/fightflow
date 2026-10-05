@@ -1,0 +1,97 @@
+---
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const words = t(lang).ticker;
+---
+
+<div class="ticker-wrap">
+<div class="ticker">
+  <div class="ticker__track">
+    {
+      [0, 1].map((copy) => (
+        <ul class="ticker__group" role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {words.map((w) => (
+            <li>
+              {w}
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z" />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+</div>
+
+<style>
+  /* The rotated band straddles the dark hero and the light section below.
+     The wrapper clips it so it never causes horizontal scrolling. */
+  .ticker-wrap {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(1rem, 2.5vw, 2.25rem);
+    background: linear-gradient(to bottom, var(--c-ink) 50%, var(--c-bone) 50%);
+    overflow: hidden;
+  }
+
+  .ticker {
+    position: relative;
+    z-index: 2;
+    margin-inline: -4vw;
+    padding-block: clamp(0.7rem, 0.5rem + 0.8vw, 1.1rem);
+    background: var(--c-red);
+    color: var(--c-ink);
+    transform: rotate(-1.6deg);
+    overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgb(225 29 39 / 0.6);
+  }
+
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+  }
+
+  .ticker__group {
+    display: flex;
+    list-style: none;
+  }
+
+  .ticker li {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    padding-right: clamp(1rem, 2.5vw, 2rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ticker svg {
+    width: 0.55em;
+    height: 0.55em;
+    fill: currentColor;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,191 @@
+---
+import Wordmark from './Wordmark.astro';
+import Icon from './Icon.astro';
+import { club } from '../data/site';
+import { t, route, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  routeKey: RouteKey;
+}
+
+const { lang, routeKey } = Astro.props;
+const d = t(lang);
+const home = route('home', lang);
+const other: Lang = lang === 'de' ? 'en' : 'de';
+const year = new Date().getFullYear();
+const links = [
+  { href: `${home}#training`, label: d.nav.training },
+  { href: `${home}#coach`, label: d.nav.coach },
+  { href: `${home}#pricing`, label: d.nav.pricing },
+  { href: `${home}#join`, label: d.nav.register },
+  { href: `${home}#faq`, label: d.nav.faq },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a class="site-footer__logo" href={home} aria-label={d.nav.home}><Wordmark title="" /></a>
+        <p>{d.footer.tagline}</p>
+      </div>
+
+      <nav class="site-footer__col" aria-labelledby="footer-nav-title">
+        <h2 class="site-footer__title" id="footer-nav-title">{d.footer.navTitle}</h2>
+        <ul role="list">
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">{d.footer.contactTitle}</h2>
+        <ul role="list">
+          <li><a href={club.phoneHref}>{club.phone}</a></li>
+          <li><a href={`mailto:${club.email}`}>{club.email}</a></li>
+          <li>{d.contact.locationValue}</li>
+        </ul>
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">{d.footer.legalTitle}</h2>
+        <ul role="list">
+          <li><a href={route('imprint', lang)}>{d.footer.imprint}</a></li>
+          <li><a href={route('privacy', lang)}>{d.footer.privacy}</a></li>
+          <li>
+            <a href={route(routeKey, other)} hreflang={other} lang={other}>{d.nav.switchTo}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__giant" aria-hidden="true">
+      <Wordmark title="" />
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {club.legalName}</p>
+      <a class="site-footer__top-link" href="#top">
+        {d.footer.top}
+        <Icon name="arrow-up" size={16} />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-top: var(--space-l);
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--c-line);
+    background: var(--c-ink);
+    overflow: hidden;
+  }
+
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: var(--space-m);
+  }
+
+  .site-footer__logo {
+    display: block;
+    width: 170px;
+    margin-bottom: 1rem;
+  }
+
+  .site-footer__brand p {
+    max-width: 26ch;
+    color: var(--c-text-dim);
+  }
+
+  .site-footer__title {
+    margin-bottom: 0.9rem;
+    color: var(--c-text);
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .site-footer__col ul {
+    display: grid;
+    gap: 0.55rem;
+    list-style: none;
+    color: var(--c-text-dim);
+    font-size: 0.9375rem;
+  }
+
+  .site-footer__col a {
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .site-footer__col a:hover {
+    color: var(--c-text);
+  }
+
+  .site-footer__giant {
+    margin-block: var(--space-l) var(--space-m);
+    color: var(--c-line-strong);
+  }
+
+  .site-footer__giant :global(svg) {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .site-footer__giant :global(path) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 0.35;
+  }
+
+  .site-footer__giant :global(.wm-flow) {
+    stroke: var(--c-red);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-line);
+    color: var(--c-text-dim);
+    font-size: 0.875rem;
+  }
+
+  .site-footer__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .site-footer__top-link:hover {
+    color: var(--c-text);
+  }
+
+  @media (max-width: 900px) {
+    .site-footer__top {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .site-footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .site-footer__top {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

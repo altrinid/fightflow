@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { t, route } from '../i18n';
+
+const de = t('de');
+const en = t('en');
+---
+
+<Base lang="de" title={de.notFound.title} description={de.notFound.text} noindex>
+  <section class="nf">
+    <div class="container nf__inner">
+      <p class="nf__code display" aria-hidden="true">404</p>
+      <h1 class="h2">{de.notFound.heading}</h1>
+      <p class="lead">{de.notFound.text}</p>
+      <p class="lead" lang="en">{en.notFound.text}</p>
+      <div class="nf__ctas">
+        <a class="btn btn--primary" href={route('home', 'de')}>{de.notFound.cta}<Icon name="arrow" /></a>
+        <a class="btn btn--ghost" href={route('home', 'en')} lang="en" hreflang="en">{en.notFound.cta}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    min-height: 100svh;
+    padding: calc(var(--header-h) + 2rem) 0 var(--space-l);
+    place-items: center;
+  }
+
+  .nf__inner {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+  }
+
+  .nf__code {
+    font-size: clamp(7rem, 30vw, 18rem);
+    line-height: 0.8;
+    background: var(--grad-flow);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .nf__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+/**
+ * Renders a headline and colours its last sentence red, e.g.
+ * "Stark im Körper. <red>Klar im Kopf.</red>" – one-sentence headlines stay plain.
+ */
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const match = /^(.*[.?!])\s+(\S.*)$/.exec(text);
+const head = match ? match[1] : text;
+const tail = match ? match[2] : '';
+---
+
+{head}{tail && ' '}{tail && <span class="text-red">{tail}</span>}

@@ -1,0 +1,99 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import { club, formEndpoint } from '../data/site';
+---
+
+<LegalPage
+  lang="de"
+  routeKey="privacy"
+  title="Datenschutzerklärung | FightFlow"
+  heading="Datenschutz"
+  eyebrow="Rechtliches"
+  description="Datenschutzerklärung des Kampfsportvereins FightFlow Wien – ASKÖ: welche Daten wir verarbeiten und welche Rechte du hast."
+>
+  <p>
+    Der Schutz deiner persönlichen Daten ist uns wichtig. Wir verarbeiten deine Daten ausschließlich auf Grundlage der
+    gesetzlichen Bestimmungen (DSGVO, DSG). Hier informieren wir dich über die wichtigsten Aspekte der
+    Datenverarbeitung auf dieser Website.
+  </p>
+
+  <h2>Verantwortlicher</h2>
+  <p>
+    {club.legalName}<br />
+    {club.address.street ?? <span class="todo">[Vereinsanschrift ergänzen]</span>}, {club.address.postalCode}
+    {club.address.city}<br />
+    E-Mail: <a href={`mailto:${club.email}`}>{club.email}</a> · Telefon: <a href={club.phoneHref}>{club.phone}</a>
+  </p>
+
+  <h2>Keine Cookies, kein Tracking</h2>
+  <p>
+    Diese Website setzt keine Cookies, verwendet keine Analyse- oder Tracking-Werkzeuge und lädt keine Inhalte von
+    Drittanbietern (auch Schriften werden lokal ausgeliefert). Beim Aufruf werden daher keine Daten an Dritte
+    übermittelt.
+  </p>
+
+  <h2>Hosting &amp; Server-Logfiles</h2>
+  <p>
+    Beim Aufruf der Website speichert der Hosting-Anbieter technisch notwendige Informationen (IP-Adresse, Datum und
+    Uhrzeit, aufgerufene Seite, Browser und Betriebssystem) in Server-Logfiles. Das dient dem sicheren Betrieb der
+    Website (Art. 6 Abs. 1 lit. f DSGVO). Die Logfiles werden nach kurzer Zeit automatisch gelöscht. Hosting-Anbieter:
+    <span class="todo">[Hosting-Anbieter ergänzen]</span>.
+  </p>
+
+  <h2>Kontakt per E-Mail oder Telefon</h2>
+  <p>
+    Wenn du uns kontaktierst, verarbeiten wir deine Angaben, um deine Anfrage zu beantworten (Art. 6 Abs. 1 lit. b und f
+    DSGVO). Unser E-Mail-Postfach wird über Google (Gmail) betrieben – Anbieter ist die Google Ireland Limited, Gordon
+    House, Barrow Street, Dublin 4, Irland.
+  </p>
+
+  <h2>Online-Anmeldung</h2>
+  <p>
+    Über das Anmeldeformular verarbeiten wir Name, E-Mail-Adresse, optional Telefonnummer, gewählte Mitgliedschaft,
+    Startmonat sowie optional Angaben zu Erfahrung und eine Nachricht. Zweck ist die Bearbeitung deiner Anmeldung, die
+    Mitgliederverwaltung und die Abwicklung des Mitgliedsbeitrags. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO
+    (Vertragsanbahnung und -erfüllung) sowie deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit
+    widerrufen kannst.
+  </p>
+  {
+    formEndpoint ? (
+      <p>
+        Die Anmeldedaten werden über Google Workspace (Google Apps Script und Google Tabellen) der Google Ireland Limited
+        verarbeitet und gespeichert. Eine Übermittlung in die USA kann nicht ausgeschlossen werden; Google LLC ist unter
+        dem EU-US Data Privacy Framework zertifiziert.
+      </p>
+    ) : (
+      <p>
+        Beim Absenden öffnet sich dein E-Mail-Programm; die Anmeldung wird als E-Mail an unser Postfach gesendet. Dabei
+        gelten zusätzlich die Datenschutzbestimmungen deines E-Mail-Anbieters.
+      </p>
+    )
+  }
+
+  <h2>Speicherdauer</h2>
+  <p>
+    Wir speichern deine Daten nur so lange, wie es für die genannten Zwecke erforderlich ist, bzw. für die Dauer deiner
+    Mitgliedschaft. Zahlungsrelevante Unterlagen bewahren wir gemäß den gesetzlichen Aufbewahrungspflichten (§ 132 BAO,
+    sieben Jahre) auf.
+  </p>
+
+  <h2>Deine Rechte</h2>
+  <p>Dir stehen grundsätzlich folgende Rechte zu:</p>
+  <ul>
+    <li>Auskunft über deine gespeicherten Daten (Art. 15 DSGVO)</li>
+    <li>Berichtigung (Art. 16 DSGVO) und Löschung (Art. 17 DSGVO)</li>
+    <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+    <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+    <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+    <li>Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)</li>
+  </ul>
+  <p>
+    Wende dich dafür einfach an <a href={`mailto:${club.email}`}>{club.email}</a>. Wenn du glaubst, dass die
+    Verarbeitung deiner Daten gegen das Datenschutzrecht verstößt, kannst du dich bei der Österreichischen
+    Datenschutzbehörde beschweren (Barichgasse 40–42, 1030 Wien, <a href="https://www.dsb.gv.at" rel="noopener"
+      >www.dsb.gv.at</a
+    >).
+  </p>
+
+  <p><em>Stand: Oktober 2026</em></p>
+</LegalPage>

@@ -1,0 +1,88 @@
+---
+/**
+ * The "flow" motif: a ribbon of sinuous lines that draws itself in.
+ * Purely decorative and cheap – a single SVG, animated with CSS only.
+ */
+interface Props {
+  class?: string;
+  lines?: number;
+  /** Unique id suffix for the gradient (needed when used more than once per page). */
+  id: string;
+  /** Draw-in + drift animation. Only worth it above the fold – off-screen copies stay static. */
+  animate?: boolean;
+}
+
+const { class: className, lines = 7, id, animate = false } = Astro.props;
+
+const paths = Array.from({ length: lines }, (_, i) => {
+  const o = i * 15;
+  const k = i * 7;
+  return `M-80 ${430 + o}C240 ${250 + o - k} 520 ${600 + o + k} 820 ${400 + o}S1290 ${170 + o - k} 1540 ${290 + o}`;
+});
+const gradientId = `flow-${id}`;
+---
+
+<svg
+  class:list={['flow', { 'flow--animate': animate }, className]}
+  viewBox="0 0 1440 700"
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#e11d27" stop-opacity="0"></stop>
+      <stop offset=".22" stop-color="#e11d27"></stop>
+      <stop offset=".78" stop-color="#ff5a2b"></stop>
+      <stop offset="1" stop-color="#ff5a2b" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke={`url(#${gradientId})`} stroke-width="1.6" stroke-linecap="round">
+    {
+      paths.map((d, i) => (
+        <path d={d} pathLength="1" style={`--i:${i}`} opacity={(1 - i * 0.1).toFixed(2)} />
+      ))
+    }
+  </g>
+</svg>
+
+<style>
+  .flow {
+    pointer-events: none;
+  }
+
+  .flow--animate {
+    will-change: transform;
+    animation: flow-drift 9s ease-in-out 2.5s infinite alternate;
+  }
+
+  .flow--animate path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: flow-draw 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(var(--i) * 90ms + 250ms);
+  }
+
+  @keyframes flow-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes flow-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-2%, 3%, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow--animate,
+    .flow--animate path {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

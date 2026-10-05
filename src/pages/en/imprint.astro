@@ -1,0 +1,55 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+import { club } from '../../data/site';
+import { route } from '../../i18n';
+---
+
+<LegalPage
+  lang="en"
+  routeKey="imprint"
+  title="Imprint | FightFlow"
+  heading="Imprint"
+  eyebrow="Legal"
+  description="Imprint and legal disclosure of the martial arts club FightFlow Wien – ASKÖ."
+>
+  <p>
+    Information pursuant to § 5 of the Austrian E-Commerce Act (ECG) and disclosure pursuant to § 25 of the Austrian
+    Media Act. The <a href={route('imprint', 'de')} hreflang="de" lang="de">German version</a> is legally binding.
+  </p>
+
+  <h2>Media owner &amp; publisher</h2>
+  <p>
+    <strong>{club.legalName}</strong><br />
+    {club.address.street ?? <span class="todo">[club address]</span>}<br />
+    {club.address.postalCode} Vienna, Austria
+  </p>
+  <p>
+    Association register number (ZVR): {club.zvr ?? <span class="todo">[ZVR number]</span>}<br />
+    Registering authority: Landespolizeidirektion Wien<br />
+    Authorised representative: {club.representative ?? <span class="todo">[chair of the board]</span>}
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Phone: <a href={club.phoneHref}>{club.phone}</a><br />
+    E-mail: <a href={`mailto:${club.email}`}>{club.email}</a>
+  </p>
+
+  <h2>Purpose</h2>
+  <p>
+    Non-profit association promoting martial arts, in particular kickboxing. This website informs about training and
+    membership. The club is a member of {club.umbrella.name}.
+  </p>
+
+  <h2>Liability</h2>
+  <p>
+    The content of this website has been prepared with great care. However, we cannot guarantee that it is correct,
+    complete or up to date. We are not responsible for the content of external websites linked from this site.
+  </p>
+
+  <h2>Copyright</h2>
+  <p>
+    All content (texts, images, graphics) is protected by copyright and may only be used with the club’s permission.
+    Typefaces: Anton and Inter (SIL Open Font License 1.1), served locally.
+  </p>
+</LegalPage>

@@ -1,0 +1,134 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import Accent from './Accent.astro';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const icons: IconName[] = ['bolt', 'pulse', 'shield', 'star'];
+---
+
+<section class="section section--bone why" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <div class="why__head">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{d.why.eyebrow}</p>
+        <h2 class="h2" id="why-title"><Accent text={d.why.title} /></h2>
+      </div>
+      <p class="lead" data-reveal style="--d:120ms">{d.why.lead}</p>
+    </div>
+
+    <ul class="why__grid" role="list">
+      {
+        d.why.items.map((item, i) => (
+          <li class="why__card" data-reveal style={`--d:${i * 90}ms`}>
+            <span class="why__num" aria-hidden="true">
+              0{i + 1}
+            </span>
+            <span class="why__icon">
+              <Icon name={icons[i] ?? 'star'} size={26} />
+            </span>
+            <h3 class="h3">{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .why {
+    padding-top: var(--space-l);
+  }
+
+  .why__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-m) var(--space-l);
+    align-items: end;
+    margin-bottom: var(--space-l);
+  }
+
+  .why__head .section-head {
+    margin: 0;
+  }
+
+  .why__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    list-style: none;
+  }
+
+  .why__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 100%;
+    padding: clamp(1.4rem, 2.2vw, 2rem);
+    border: 1px solid var(--c-line-bone);
+    border-radius: var(--radius-l);
+    background: #f8f5ef;
+    overflow: hidden;
+    transition:
+      transform 0.4s var(--ease-out),
+      border-color 0.3s,
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .why__card:hover {
+    transform: translateY(-4px);
+    border-color: rgb(225 29 39 / 0.45);
+    box-shadow: 0 24px 48px -28px rgb(20 19 18 / 0.35);
+  }
+
+  .why__num {
+    position: absolute;
+    top: 0.9rem;
+    right: 1.1rem;
+    font-family: var(--font-display);
+    font-size: 3.25rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(20 19 18 / 0.18);
+  }
+
+  .why__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: 1.25rem;
+    border-radius: 50%;
+    background: var(--c-ink);
+    color: var(--c-red);
+  }
+
+  .why__card p {
+    color: var(--c-on-bone-dim);
+  }
+
+  @media (max-width: 1060px) {
+    .why__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .why__head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .why__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
