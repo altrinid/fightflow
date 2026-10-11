@@ -1,24 +1,3 @@
-# build output
-dist/
-.astro/
-
-# dependencies
-node_modules/
-
-# logs & env
-npm-debug.log*
-.env
-.env.*
-!.env.example
-
-# OS / editor
 .DS_Store
-.vscode/*
-!.vscode/extensions.json
-.idea/
-
-# local tooling output
-.lighthouse/
-
-# raw import from the old site (re-create with `npm run import:original`)
-src/assets/photos/original/
+Thumbs.db
+_poster.html
