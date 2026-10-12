@@ -288,6 +288,11 @@ h1,h2,h3,h4,p,figure,dl,dd{margin:0}
 .foot a:hover{color:var(--red-soft)}
 .foot__word{margin:70px calc(-1 * var(--gutter)) -0.06em;font:600 clamp(70px,18.6vw,330px)/.8 var(--serif);letter-spacing:-.02em;text-align:center;white-space:nowrap;color:rgba(255,255,255,.055);user-select:none;pointer-events:none;will-change:transform}
 .foot__bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--line);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.foot__by{display:inline-flex;align-items:center;gap:10px;color:var(--mute);transition:color .3s}
+.foot__by span{letter-spacing:.1em}
+.foot__mark{width:88px;height:auto;display:block;color:#8E8B85;transition:color .35s var(--ease)}
+.foot__by:hover{color:var(--txt)}
+.foot__by:hover .foot__mark{color:#0575FF}
 
 /* ---------- legal pages ---------- */
 .legal{max-width:860px;padding:calc(var(--head-h) + 70px) var(--gutter) 120px}
@@ -374,6 +379,7 @@ h1,h2,h3,h4,p,figure,dl,dd{margin:0}
   .form__row{grid-template-columns:1fr}
   .foot__grid{grid-template-columns:1fr 1fr;gap:28px}
   .foot__word{margin-top:40px}
+  .foot__bottom{flex-direction:column;align-items:flex-start;gap:16px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
