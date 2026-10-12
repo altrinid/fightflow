@@ -291,7 +291,7 @@ h1,h2,h3,h4,p,figure,dl,dd{margin:0}
 .foot__by{display:inline-flex;align-items:center;gap:10px;color:var(--mute);transition:color .3s}
 .foot__by span{letter-spacing:.1em}
 .foot__mark{width:88px;height:auto;display:block;color:#8E8B85;transition:color .35s var(--ease)}
-.foot__by:hover{color:var(--txt)}
+.foot .foot__by:hover{color:var(--txt)}
 .foot__by:hover .foot__mark{color:#0575FF}
 
 /* ---------- legal pages ---------- */
